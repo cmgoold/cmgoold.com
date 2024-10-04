@@ -1,1 +1,1 @@
-Repository for my website, `cmgoold.com <>`_
+Repository for my website, `cmgoold.com`_

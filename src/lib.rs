@@ -1,7 +1,9 @@
-use actix_web::{dev::Server, web, get, App, HttpServer, HttpResponse, Responder};
+use actix_web::{dev::Server, web, App, HttpServer, HttpResponse};
+use actix_files::Files;
 use tera::Tera;
 
 mod handlers;
+mod metadata;
 
 #[macro_use]
 extern crate lazy_static;
@@ -15,7 +17,7 @@ lazy_static! {
                 ::std::process::exit(1);
             }
         };
-        tera.autoescape_on(vec![".html", ".sqp"]);
+        tera.autoescape_on(vec![".html", ".sql"]);
         tera
     };
 }
@@ -25,8 +27,11 @@ pub fn serve() -> Result<Server, std::io::Error> {
     let server = HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(TEMPLATES.clone()))
+            .service(Files::new("/styles", "_assets/styles/").use_last_modified(true))
             .route("/status", web::get().to(HttpResponse::Ok))
             .service(handlers::index)
+            .service(handlers::posts)
+            .service(handlers::post)
     })
     .bind(("127.0.0.1", 8080))?
     .run();

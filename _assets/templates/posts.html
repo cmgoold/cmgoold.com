@@ -5,5 +5,11 @@
 {% endblock header %}
 
 {% block content %}
-    {% include "about.html" %}
+<ul>
+    {% for m in metadata %}
+        <li>
+            <a href="/posts/{{ m.slug }}">{{ m.title }}</a>
+        </li>
+    {% endfor %}
+</ul>
 {% endblock content %}

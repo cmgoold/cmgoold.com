@@ -5,5 +5,10 @@
 {% endblock header %}
 
 {% block content %}
-    {% include "about.html" %}
+
+<div>
+    {{ post | safe }}
+</div>
+
 {% endblock content %}
+

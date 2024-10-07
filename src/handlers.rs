@@ -102,10 +102,13 @@ fn pull_metadata() -> Result<Vec<Metadata>, std::io::Error> {
                     let content = std::fs::read_to_string(m.path())?;
                     let metadata: Metadata = match toml::from_str(&content) {
                         Ok(s) => s,
-                        Err(e) => return Err(
-                            std::io::Error::new(std::io::ErrorKind::NotFound,
-                                "could not parse metadata content"
-                            ))
+                        Err(e) => {
+                            println!("{:}", e);
+                            return Err(
+                                std::io::Error::new(std::io::ErrorKind::NotFound,
+                                    "could not parse metadata content"
+                                ))
+                        }
                     };
                     metadatas.push(metadata);
                 }

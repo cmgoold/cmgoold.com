@@ -6,4 +6,5 @@ pub struct Metadata {
     date: String,
     slug: String,
     tags: Vec<String>,
+    pub publish: bool,
 }

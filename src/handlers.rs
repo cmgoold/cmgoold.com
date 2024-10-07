@@ -1,12 +1,13 @@
 use actix_web::{get, web, HttpResponse, Responder};
-use pulldown_cmark::{Parser, Options, html};
 use ignore::WalkBuilder;
+use pulldown_cmark::{html, Options, Parser};
 
 use crate::metadata::Metadata;
 
 #[get("/")]
 pub async fn index(templates: web::Data<tera::Tera>) -> impl Responder {
-    let context = tera::Context::new();
+    let mut context = tera::Context::new();
+    context.insert("file", "");
 
     match templates.render("index.html", &context) {
         Ok(s) => HttpResponse::Ok().content_type("text/html").body(s),
@@ -22,17 +23,18 @@ pub async fn index(templates: web::Data<tera::Tera>) -> impl Responder {
 #[get("/posts")]
 pub async fn posts(templates: web::Data<tera::Tera>) -> impl Responder {
     let mut context = tera::Context::new();
+    context.insert("file", "");
 
-    let metadata = match pull_metadata() {
+    let metadata = match pull_metadatas() {
         Ok(s) => s,
         Err(e) => {
             println!("{:?}", e);
             return HttpResponse::InternalServerError()
                 .content_type("text/html")
                 .body("<p>Something went wrong</p>");
-            }
+        }
     };
-    
+
     context.insert("metadata", &metadata);
 
     match templates.render("posts.html", &context) {
@@ -49,6 +51,7 @@ pub async fn posts(templates: web::Data<tera::Tera>) -> impl Responder {
 #[get("/posts/{slug}")]
 pub async fn post(templates: web::Data<tera::Tera>, slug: web::Path<String>) -> impl Responder {
     let mut context = tera::Context::new();
+    context.insert("file", "post");
 
     let post: String = match pull_post(&slug) {
         Ok(s) => s,
@@ -56,7 +59,17 @@ pub async fn post(templates: web::Data<tera::Tera>, slug: web::Path<String>) -> 
             println!("{:?}", e);
             return HttpResponse::NotFound()
                 .content_type("text/html")
-                .body("<p>Could not find the post</p>")
+                .body("<p>Could not find the post</p>");
+        }
+    };
+
+    let metadata: Metadata = match pull_metadata(&slug) {
+        Ok(s) => s,
+        Err(e) => {
+            println!("{:?}", e);
+            return HttpResponse::NotFound()
+                .content_type("text/html")
+                .body("<p>Could not find the metadata</p>");
         }
     };
 
@@ -67,6 +80,7 @@ pub async fn post(templates: web::Data<tera::Tera>, slug: web::Path<String>) -> 
     html::push_html(&mut output, parser);
 
     context.insert("post", &output);
+    context.insert("metadata", &metadata);
 
     match templates.render("post.html", &context) {
         Ok(s) => HttpResponse::Ok().content_type("text/html").body(s),
@@ -74,21 +88,22 @@ pub async fn post(templates: web::Data<tera::Tera>, slug: web::Path<String>) -> 
             println!("{:?}", e);
             return HttpResponse::NotFound()
                 .content_type("text/html")
-                .body("<p>Could not find post</p>")
+                .body("<p>Could not find post</p>");
         }
     }
 }
 
-fn pull_metadata() -> Result<Vec<Metadata>, std::io::Error> {
+fn pull_metadatas() -> Result<Vec<Metadata>, std::io::Error> {
     let mut t = ignore::types::TypesBuilder::new();
     t.add_defaults();
     let tomls = match t.select("toml").build() {
         Ok(t) => t,
         Err(e) => {
             println!("{:}", e);
-            return Err(std::io::Error::new(std::io::ErrorKind::Other,
-                    "could not build Markdown file type matcher"
-            ))
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "could not build Markdown file type matcher",
+            ));
         }
     };
 
@@ -104,19 +119,22 @@ fn pull_metadata() -> Result<Vec<Metadata>, std::io::Error> {
                         Ok(s) => s,
                         Err(e) => {
                             println!("{:}", e);
-                            return Err(
-                                std::io::Error::new(std::io::ErrorKind::NotFound,
-                                    "could not parse metadata content"
-                                ))
+                            return Err(std::io::Error::new(
+                                std::io::ErrorKind::NotFound,
+                                "could not parse metadata content",
+                            ));
                         }
                     };
-                    metadatas.push(metadata);
+                    if metadata.publish {
+                        metadatas.push(metadata);
+                    }
                 }
             }
             Err(e) => {
                 println!("{:}", e);
-                return Err(std::io::Error::new(std::io::ErrorKind::NotFound,
-                        "could not find Markdown file"
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::NotFound,
+                    "could not find Markdown file",
                 ));
             }
         }
@@ -130,9 +148,26 @@ fn pull_post(slug: &str) -> Result<String, std::io::Error> {
         Ok(s) => s,
         Err(e) => {
             println!("{:?}", e);
-            return Err(e)
+            return Err(e);
         }
     };
 
     Ok(content)
+}
+
+fn pull_metadata(slug: &str) -> Result<Metadata, std::io::Error> {
+    let raw = std::fs::read_to_string(format!("./_assets/posts/{}/metadata.toml", slug))?;
+
+    let metadata = match toml::from_str(&raw) {
+        Ok(s) => s,
+        Err(e) => {
+            println!("{:?}", e);
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "could not parse metadata",
+            ));
+        }
+    };
+
+    Ok(metadata)
 }

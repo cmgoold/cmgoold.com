@@ -1,5 +1,5 @@
-use actix_web::{dev::Server, web, App, HttpServer, HttpResponse};
 use actix_files::Files;
+use actix_web::{dev::Server, web, App, HttpResponse, HttpServer};
 use tera::Tera;
 
 mod handlers;
@@ -21,7 +21,6 @@ lazy_static! {
         tera
     };
 }
-
 
 pub fn serve() -> Result<Server, std::io::Error> {
     let server = HttpServer::new(move || {

@@ -5,10 +5,12 @@
 {% endblock header %}
 
 {% block content %}
-<ul class="flex flex-wrap mx-auto">
+<ul class="inline list-disc flex flex-wrap">
     {% for m in metadata %}
         <li>
-            <p>{{ m.date }} |<p> <a href="/posts/{{ m.slug }}">{{ m.title }}</a>
+            <p>{{ m.date }} |
+                <a href="/posts/{{ m.slug }}">{{ m.title }}</a>
+            </p>
         </li>
     {% endfor %}
 </ul>

@@ -1,0 +1,5 @@
+title = "Ordinal models for ordinal data"
+date = "2024-10-20"
+slug = "ordinal-models"
+tags = ["statistics", "stan"]
+publish = true

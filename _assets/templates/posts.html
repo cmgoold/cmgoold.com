@@ -1,15 +1,30 @@
 {% extends "base.html" %}
 
+{% block head %}
+    <title>conor/posts</title>
+{% endblock head %}
+
 {% block header %}
     {% include "navigation.html" %}
 {% endblock header %}
 
 {% block content %}
-<ul class="inline list-disc flex flex-wrap">
+<p class="dark:text-gray-500 text-gray-600 italic">
+Posts are arranged by their initial publication
+date, but each has an additional 'last edited'
+date. Corrections and amendments might be
+made to previous posts if I find errors or
+my views change. If you want to see
+the commit history, however, check out the
+<a href="https://github.com/cmgoold/cmgoold.com/">Github repository</a>.
+</p>
+<br>
+<ul class="inline list-type-none space-y-2">
     {% for m in metadata %}
         <li>
-            <p>{{ m.date }} |
+            <p class="sm:text-sm md:text-base">{{ m.date }}
                 <a href="/posts/{{ m.slug }}">{{ m.title }}</a>
+            <p class="text-sm dark:text-gray-500 text-gray-600">{{ m.tags }}</p>
             </p>
         </li>
     {% endfor %}

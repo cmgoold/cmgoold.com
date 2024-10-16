@@ -1,11 +1,18 @@
 {% extends "base.html" %}
 
+{% block head %}
+    <title>conor/posts/{{ metadata.slug }}</title>
+{% endblock head %}
+
 {% block header %}
     {% include "navigation.html" %}
 {% endblock header %}
 
 {% block content %}
 <div class="space-y-5">
-    {{ post | safe }} 
+    <h1>{{ metadata.title }}</h1>
+    <p class="text-sm"> { last updated: {{ metadata.date }} } <p>
+    <hr class="h1">
+    <article class="space-y-5">{{ post | safe }}<article>
 </div>
 {% endblock content %}

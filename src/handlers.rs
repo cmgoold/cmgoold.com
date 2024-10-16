@@ -73,7 +73,9 @@ pub async fn post(templates: web::Data<tera::Tera>, slug: web::Path<String>) -> 
         }
     };
 
-    let options = Options::empty();
+    let mut options = Options::empty();
+    options.insert(Options::ENABLE_MATH);
+    options.insert(Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);
     let parser = Parser::new_ext(&post, options);
 
     let mut output = String::new();

@@ -4,16 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="/styles/main.css">
+    <link rel="stylesheet" type="text/css" href="../styles/main.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+	<link rel="stylesheet" media="(prefers-color-scheme: light)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/atom-one-light.css">
+	<link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/brewer.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/highlightjs-line-numbers.js@2.8.0/dist/highlightjs-line-numbers.min.js"></script>
+	<script>hljs.highlightAll();</script>
+	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+	<link rel="preconnect" href="https://fonts.bunny.net">
+	<link href="https://fonts.bunny.net/css?family=inconsolata:400|fira-code:400" rel="stylesheet" />
+    <script>
+        MathJax = {
+            chtml: { displayAlign: 'center' }
+        };
+    </script>
     {% block head %}
     {% endblock head %}
 </head>
 
-<body class="flex flex-col justify-between min-h-screen font-sans leading-relaxed tracking-normal">
+<body class="font-mono dark:bg-[#0f141a] dark:text-[#c5c5c5] md:ml-10 md:w-3/5 md:mr-10 sm:mx-auto sm:px-5 sm:w-full mt-5 flex flex-col justify-between text-left min-h-screen leading-relaxed tracking-normal overflow-x-hidden">
     {% block header %}
     {% endblock header %}
 
-    <main class="container flex-1 w-full mx-10 overflow-x-hidden">
+    <main class="container flex-1">
         {% block content %}{% endblock content %}
     </main>
     {% block footer %}{% endblock footer %}

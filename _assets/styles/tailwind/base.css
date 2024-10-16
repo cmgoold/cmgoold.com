@@ -9,4 +9,39 @@
     h2 {
         @apply text-xl;
     }
+	nav a:visited, a:link {
+		color: blue; /* #778899; */
+		text-decoration: none;
+	}
+    nav a:hover {
+        color: #93c572;
+    }
+	a:visited, a:link {
+		color: blue; /* #ffb454; */
+		text-decoration: underline;
+	}
+    a:hover {
+        color: #93c572;
+    }
+	html {
+		font-size: 19px;
+	}
+    pre {
+		font-family: "Fira Code", "monospace";
+        font-size: 15px;
+    }
+    code {
+		font-family: "Fira Code", "monospace";
+        color: #93c572;
+    }
+    @media (prefers-color-scheme: dark) {
+		nav a:visited, a:link {
+			color: #87ceeb; /* #778899; */
+			text-decoration: none;
+		}
+		a:visited, a:link {
+			color: #87ceeb; /* #ffb454; */
+			text-decoration: underline;
+		}
+	}
 }

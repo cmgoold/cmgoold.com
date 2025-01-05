@@ -31,8 +31,9 @@ pub fn serve() -> Result<Server, std::io::Error> {
             .service(handlers::index)
             .service(handlers::posts)
             .service(handlers::post)
+            .service(handlers::posts_filter)
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("0.0.0.0", 8080))?
     .run();
 
     Ok(server)

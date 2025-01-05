@@ -15,6 +15,7 @@
 	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 	<link rel="preconnect" href="https://fonts.bunny.net">
 	<link href="https://fonts.bunny.net/css?family=inconsolata:400|fira-code:400" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=lato:400|libre-baskerville:400|inter:400" rel="stylesheet" />
     <script>
         MathJax = {
             chtml: { displayAlign: 'center' }
@@ -24,14 +25,20 @@
     {% endblock head %}
 </head>
 
-<body class="font-mono dark:bg-[#0f141a] dark:text-[#c5c5c5] md:ml-10 md:w-3/5 md:mr-10 sm:mx-auto sm:px-5 sm:w-full mt-5 flex flex-col justify-between text-left min-h-screen leading-relaxed tracking-normal overflow-x-hidden">
+<body> 
     {% block header %}
     {% endblock header %}
 
-    <main class="container flex-1">
+    <main>
         {% block content %}{% endblock content %}
     </main>
-    {% block footer %}{% endblock footer %}
+    <br>
+    <footer>
+        {% block footer %}
+            {% include "footer.html" %}
+        {% endblock footer %}
+    </footer>
 </body>
+
 
 </html>

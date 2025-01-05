@@ -6,10 +6,11 @@ edition = "2021"
 [dependencies]
 actix-web = "4"
 actix-files = "0.6.6"
-tera = "1"
+tera = { version = "1", features = ["builtins"] }
 lazy_static = "1.5.0"
 pulldown-cmark = "0.12.1"
 regex = "1"
 ignore = "0.4.23"
 toml = "0.8.19"
 serde = { version = "1.0.210", features = ["derive"] }
+chrono = { version = "0.4.39", features = ["serde"] }

@@ -1,6 +1,8 @@
 use actix_web::{get, web, HttpResponse, Responder};
 use ignore::WalkBuilder;
 use pulldown_cmark::{html, Options, Parser};
+use std::time::SystemTime;
+use chrono::{DateTime, Utc};
 
 use crate::metadata::Metadata;
 
@@ -25,7 +27,7 @@ pub async fn posts(templates: web::Data<tera::Tera>) -> impl Responder {
     let mut context = tera::Context::new();
     context.insert("file", "");
 
-    let metadata = match pull_metadatas() {
+    let metadata = match pull_metadatas(None) {
         Ok(s) => s,
         Err(e) => {
             println!("{:?}", e);
@@ -95,7 +97,36 @@ pub async fn post(templates: web::Data<tera::Tera>, slug: web::Path<String>) -> 
     }
 }
 
-fn pull_metadatas() -> Result<Vec<Metadata>, std::io::Error> {
+#[get("/posts_filter/{tag}")]
+pub async fn posts_filter(templates: web::Data<tera::Tera>, tag: web::Path<String>) -> impl Responder {
+    let mut context = tera::Context::new();
+    context.insert("file", "");
+
+    let tag = tag.into_inner();
+    let metadata = match pull_metadatas(Some(&tag)) {
+        Ok(s) => s,
+        Err(e) => {
+            println!("{:?}", e);
+            return HttpResponse::InternalServerError()
+                .content_type("text/html")
+                .body("<p>Something went wrong</p>");
+        }
+    };
+
+    context.insert("metadata", &metadata);
+
+    match templates.render("posts.html", &context) {
+        Ok(s) => HttpResponse::Ok().content_type("text/html").body(s),
+        Err(e) => {
+            println!("{:?}", e);
+            HttpResponse::InternalServerError()
+                .content_type("text/html")
+                .body("<p>Something went wrong!</p>")
+        }
+    }
+}
+
+fn pull_metadatas(tag: Option<&String>) -> Result<Vec<Metadata>, std::io::Error> {
     let mut t = ignore::types::TypesBuilder::new();
     t.add_defaults();
     let tomls = match t.select("toml").build() {
@@ -128,7 +159,13 @@ fn pull_metadatas() -> Result<Vec<Metadata>, std::io::Error> {
                         }
                     };
                     if metadata.publish {
-                        metadatas.push(metadata);
+                        if !tag.is_some() {
+                            metadatas.push(metadata);
+                        } else {
+                            if metadata.tags.contains(tag.unwrap()) {
+                                metadatas.push(metadata);
+                            }
+                        }
                     }
                 }
             }
@@ -141,6 +178,8 @@ fn pull_metadatas() -> Result<Vec<Metadata>, std::io::Error> {
             }
         }
     }
+
+    metadatas.sort_by(|a, b| b.string_date_to_datetime().cmp(&a.string_date_to_datetime()));
 
     Ok(metadatas)
 }
@@ -158,9 +197,14 @@ fn pull_post(slug: &str) -> Result<String, std::io::Error> {
 }
 
 fn pull_metadata(slug: &str) -> Result<Metadata, std::io::Error> {
-    let raw = std::fs::read_to_string(format!("./_assets/posts/{}/metadata.toml", slug))?;
+    let metadata_path = format!("./_assets/posts/{}/metadata.toml", slug);
+    let post_path_string = format!("./_assets/posts/{}/post.md", slug);
+    let post_path = std::path::Path::new(&post_path_string);
+    let raw = std::fs::read_to_string(metadata_path)?;
+    let edited_date_systime: SystemTime = post_path.metadata().unwrap().modified().unwrap();
+    let edited_datetime: DateTime<Utc> = edited_date_systime.into();
 
-    let metadata = match toml::from_str(&raw) {
+    let mut metadata: Metadata = match toml::from_str(&raw) {
         Ok(s) => s,
         Err(e) => {
             println!("{:?}", e);
@@ -170,6 +214,7 @@ fn pull_metadata(slug: &str) -> Result<Metadata, std::io::Error> {
             ));
         }
     };
+    metadata.edited_date = Some(edited_datetime.format("%Y-%m-%d").to_string());
 
     Ok(metadata)
 }

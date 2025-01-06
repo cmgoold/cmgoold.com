@@ -1,10 +1,16 @@
-use actix_web::{get, web, HttpResponse, Responder};
+use actix_web::{get, web, HttpResponse, HttpRequest, Responder};
 use ignore::WalkBuilder;
 use pulldown_cmark::{html, Options, Parser};
 use std::time::SystemTime;
 use chrono::{DateTime, Utc};
+use serde::Deserialize;
 
 use crate::metadata::Metadata;
+
+#[derive(Debug, Deserialize)]
+pub struct Tag {
+    tag: Option<String>
+}
 
 #[get("/")]
 pub async fn index(templates: web::Data<tera::Tera>) -> impl Responder {
@@ -23,11 +29,17 @@ pub async fn index(templates: web::Data<tera::Tera>) -> impl Responder {
 }
 
 #[get("/posts")]
-pub async fn posts(templates: web::Data<tera::Tera>) -> impl Responder {
+pub async fn posts(templates: web::Data<tera::Tera>, request: HttpRequest) -> impl Responder {
     let mut context = tera::Context::new();
     context.insert("file", "");
 
-    let metadata = match pull_metadatas(None) {
+    let query = web::Query::<Tag>::from_query(request.query_string()).unwrap();
+    let tag = match &query.tag {
+        Some(s) => Some(s),
+        None => None
+    };
+
+    let metadata = match pull_metadatas(tag) {
         Ok(s) => s,
         Err(e) => {
             println!("{:?}", e);
@@ -93,35 +105,6 @@ pub async fn post(templates: web::Data<tera::Tera>, slug: web::Path<String>) -> 
             return HttpResponse::NotFound()
                 .content_type("text/html")
                 .body("<p>Could not find post</p>");
-        }
-    }
-}
-
-#[get("/posts_filter/{tag}")]
-pub async fn posts_filter(templates: web::Data<tera::Tera>, tag: web::Path<String>) -> impl Responder {
-    let mut context = tera::Context::new();
-    context.insert("file", "");
-
-    let tag = tag.into_inner();
-    let metadata = match pull_metadatas(Some(&tag)) {
-        Ok(s) => s,
-        Err(e) => {
-            println!("{:?}", e);
-            return HttpResponse::InternalServerError()
-                .content_type("text/html")
-                .body("<p>Something went wrong</p>");
-        }
-    };
-
-    context.insert("metadata", &metadata);
-
-    match templates.render("posts.html", &context) {
-        Ok(s) => HttpResponse::Ok().content_type("text/html").body(s),
-        Err(e) => {
-            println!("{:?}", e);
-            HttpResponse::InternalServerError()
-                .content_type("text/html")
-                .body("<p>Something went wrong!</p>")
         }
     }
 }

@@ -20,7 +20,7 @@
             <span class=post-list><a href="/posts/{{ m.slug }}">{{ m.title }}</a>
             <span class="tags">
                 {% for tag in m.tags %}
-                    [<a href="/posts_filter/{{ tag }}">{{ tag }}</a>]
+                    [<a href="/posts?tag={{ tag }}">{{ tag }}</a>]
                 {% endfor %}
             </span>
             </span>

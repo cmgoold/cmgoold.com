@@ -1,10 +1,13 @@
 :root {
-    --background-color: #f4f5f0; /*#efefef;*/
+    --background-color: #fffff8; /*#f4f5f0; /*#efefef;*/
     --font-color: black;
     --dark-gray-color: #656466;
     --link-color: blue;
     --visited-link-color: #646093;
-    --font-sans-serif: "Lato", sans-serif;
+    --hover-link-color: var(--dark-gray-color);
+    --font-sans-serif: -apple-system, BlinkMacSystemFont, "segoe ui", roboto, "helvetica neue", "helvetica", arial, sans-serif; /* "Lato", sans-serif; */
+    --font-serif: Iowan Old Style, Apple Garamond, Baskerville, Times New Roman, Droid Serif, Times, Source Serif Pro, serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+    --font-monospace: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
     --body-font-size: 1.1rem;
     --small-font-size: 0.8rem;
     --line-height: 1.4;
@@ -49,8 +52,8 @@ body {
 }
 
 footer {
-    font-family: "Inconsolata", monospace;
-    font-size: 1rem;
+    font-family: var(--font-monospace);
+    font-size: var(--small-font-size);
     color: var(--dark-gray-color);
     border-top: 2px solid;
     padding-top: 1%;
@@ -60,8 +63,8 @@ a {
     color: var(--link-color);
 }
 
-a:visited {
-    color: var(--visited-link-color);
+a:hover {
+    background-color: var(--hover-link-color);
 }
 
 nav a:visited {
@@ -84,7 +87,7 @@ nav ul li {
 }
 
 code {
-    font-family: "Fira Code", monospace;
+    font-family: var(--font-monospace);
     font-size: 1.0rem;
 }
 
@@ -105,7 +108,7 @@ ul.posts li span {
 }
 
 ul.posts li span.tags {
-    flex: 0 0 150px;
+    flex: 0 0 120px;
     margin-left: 1%;
     color: gray;
     font-size: var(--small-font-size);
@@ -113,7 +116,7 @@ ul.posts li span.tags {
 }
 
 ul.posts li span.post-list {
-    flex: 0 0 50%;
+    flex: 0 0 60%;
     white-space: normal;
 }
 
@@ -123,7 +126,7 @@ ul.posts li span.tags a {
 }
 
 .metadata {
-    font-family: "Fira Code", monospace;
+    font-family: var(--font-monospace);
     font-size: 0.9rem;
     color: var(--dark-gray-color);
     line-height: 1.5;

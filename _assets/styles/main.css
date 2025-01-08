@@ -1,7 +1,11 @@
 :root {
     --background-color: #fffff8; /*#f4f5f0; /*#efefef;*/
     --font-color: black;
-    --dark-gray-color: #656466;
+    --dark-gray-color: #656466; 
+    --light-gray-color: #e7e9e7;
+    --site-name-color: var(--dark-gray-color);
+    --inline-code-background: var(--light-gray-color);
+    --inline-code-border: var(--dark-gray-color);
     --link-color: blue;
     --visited-link-color: #646093;
     --hover-link-color: var(--dark-gray-color);
@@ -19,6 +23,9 @@
         --background-color: #0f141a;
         --font-color: #c5c5c5;
         --link-color: #87ceeb;
+        --inline-code-background: #3b302f;
+        --inline-code-border: var(--dark-gray-color);
+        --site-name-color: var(--font-color);
     }
 }
 
@@ -49,6 +56,13 @@ body {
         margin-left: 2%;
         margin-bottom: 5%;
     }
+}
+
+.site-name {
+    font-family: var(--font-monospace);
+    color: var(--site-name-color);
+    font-weight: bold;
+    font-size: 1.5rem;
 }
 
 footer {
@@ -88,7 +102,10 @@ nav ul li {
 
 code {
     font-family: var(--font-monospace);
-    font-size: 1.0rem;
+    font-size: 0.9rem;
+    background-color: var(--inline-code-background);
+    border: solid var(--inline-code-border);
+    padding: 0px;
 }
 
 

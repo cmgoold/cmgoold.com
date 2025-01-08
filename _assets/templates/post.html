@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>cmgoold/posts/{{ metadata.slug }}</title>
+{% endblock head %}
+
+{% block header %}
+    {% include "navigation.html" %}
+{% endblock header %}
+
+{% block content %}
+    <h1>{{ metadata.title }}</h1>
+    <div class=metadata> 
+        <ul>
+            <li>Posted: {{ metadata.date }}</li>
+            <li>Edited: {{ metadata.edited_date }}</li>
+            {% if metadata.edit_notes %}
+                <li>Edits: {{ metadata.edit_notes }}</li>
+            {% endif %}
+        </ul>
+    </div>
+    <article>{{ post | safe }}<article>
+{% endblock content %}

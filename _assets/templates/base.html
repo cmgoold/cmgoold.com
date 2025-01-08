@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../styles/main.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+	<link rel="stylesheet" media="(prefers-color-scheme: light)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/atom-one-light.css">
+	<link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/brewer.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/highlightjs-line-numbers.js@2.8.0/dist/highlightjs-line-numbers.min.js"></script>
+	<script>hljs.highlightAll();</script>
+	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+	<link rel="preconnect" href="https://fonts.bunny.net">
+	<link href="https://fonts.bunny.net/css?family=inconsolata:400|fira-code:400" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=lato:400|libre-baskerville:400|inter:400" rel="stylesheet" />
+    <script>
+        MathJax = {
+            chtml: { displayAlign: 'center' }
+        };
+    </script>
+    {% block head %}
+    {% endblock head %}
+</head>
+
+<body> 
+    {% block header %}
+    {% endblock header %}
+
+    <main>
+        {% block content %}{% endblock content %}
+    </main>
+    <br>
+    <footer>
+        {% block footer %}
+            {% include "footer.html" %}
+        {% endblock footer %}
+    </footer>
+</body>
+
+
+</html>

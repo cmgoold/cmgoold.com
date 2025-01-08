@@ -1,1 +1,3 @@
 /target
+**/.*.swp
+_assets/styles/tailwind/node_modules

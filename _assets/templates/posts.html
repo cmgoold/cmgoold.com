@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>cmgoold/posts</title>
+{% endblock head %}
+
+{% block header %}
+    {% include "navigation.html" %}
+{% endblock header %}
+
+{% block content %}
+{% include "posts-details.html" %}
+
+<ul class="posts">
+    {% for m in metadata %}
+        <li>
+            <span class=datetime>
+                {{ m.date }}
+            </span>
+            <span class=post-list><a href="/posts/{{ m.slug }}">{{ m.title }}</a>
+            <span class="tags">
+                {% for tag in m.tags %}
+                    [<a href="/posts?tag={{ tag }}">{{ tag }}</a>]
+                {% endfor %}
+            </span>
+            </span>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock content %}

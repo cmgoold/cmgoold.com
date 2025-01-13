@@ -37,6 +37,16 @@ https://mortenvistisen.com/posts/how-to-build-a-simple-blog-using-rust)
 for piecing the backend and
 frontend together.  
 
+```rust
+
+fn main() {
+    let name = "conor";
+    println!("Hello {}", name)
+}
+```
+
+\\[ X \sim \mathrm{Normal}(0, 1) \\]
+
 The design is minimal, and I have tried to
 follow good design principles throughout:
 pages should be clear and easy to read

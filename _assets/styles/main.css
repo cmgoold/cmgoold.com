@@ -1,16 +1,18 @@
 :root {
-    --background-color: #fffff8; /*#f4f5f0; /*#efefef;*/
+    --background-color: #f9f5d7; /* #fffff8; /*#f4f5f0; /*#efefef;*/
     --font-color: black;
     --dark-gray-color: #656466; 
     --light-gray-color: #e7e9e7;
+    --light-blue-color: #f9d7f5;
     --site-name-color: var(--dark-gray-color);
+    --tag-color: var(--dark-gray-color);
     --inline-code-background: var(--light-gray-color);
     --inline-code-border: var(--dark-gray-color);
     --link-color: blue;
     --visited-link-color: #646093;
-    --hover-link-color: var(--dark-gray-color);
+    --hover-link-color: var(--inline-code-background);
     --font-sans-serif: -apple-system, BlinkMacSystemFont, "segoe ui", roboto, "helvetica neue", "helvetica", arial, sans-serif; /* "Lato", sans-serif; */
-    --font-serif: Iowan Old Style, Apple Garamond, Baskerville, Times New Roman, Droid Serif, Times, Source Serif Pro, serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+    --font-serif: "Apple Garamond", "Iowan Old Style", Baskerville, "Times New Roman", "Droid Serif", Times, "Source Serif Pro", serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     --font-monospace: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
     --body-font-size: 1.1rem;
     --small-font-size: 0.8rem;
@@ -26,6 +28,7 @@
         --inline-code-background: #3b302f;
         --inline-code-border: var(--dark-gray-color);
         --site-name-color: var(--font-color);
+        --tag-color: var(--font-color);
     }
 }
 
@@ -105,7 +108,7 @@ code {
     font-size: 0.9rem;
     background-color: var(--inline-code-background);
     border: solid var(--inline-code-border);
-    padding: 0px;
+    padding: 2px;
 }
 
 
@@ -127,7 +130,7 @@ ul.posts li span {
 ul.posts li span.tags {
     flex: 0 0 120px;
     margin-left: 1%;
-    color: gray;
+    color: var(--tag-color);
     font-size: var(--small-font-size);
     line-height: 2.1;
 }
@@ -138,7 +141,7 @@ ul.posts li span.post-list {
 }
 
 ul.posts li span.tags a {
-    color: gray;
+    color: var(--tag-color);
     padding: 0;
 }
 

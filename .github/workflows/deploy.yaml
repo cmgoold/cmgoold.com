@@ -1,0 +1,39 @@
+name: Deploy website
+
+on: 
+  branches: [main]
+  pull_request:
+    types: [closed]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t cmgoold:latest .
+
+      - name: Save Docker image
+        run: docker save -o cmgoold.tar cmgoold:latest
+
+      - name: Transfer Docker files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.KEY }}
+          source: "Dockerfile, compose.yaml"
+          target: cmgoold
+
+      - name: Deploy on server
+        uses: applebpy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          post: ${{ secrets.PORT }}
+          key: ${{ secrets.KEY }}
+          script: docker compose up --build

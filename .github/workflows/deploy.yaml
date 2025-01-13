@@ -40,5 +40,5 @@ jobs:
           key: ${{ secrets.KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            docker load -i cmgoold.tar
-            docker compose -f compose.deploy.yaml up
+            docker load -i cmgoold/cmgoold.tar
+            docker compose -f cmgoold/compose.deploy.yaml up

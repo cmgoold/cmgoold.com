@@ -12,12 +12,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build -t cmgoold:latest .
-
-      - name: Save Docker image
-        run: docker save -o cmgoold.tar cmgoold:latest
-
       - name: Copy Docker files to server via scp
         uses: appleboy/scp-action@v0.1.7
         with:

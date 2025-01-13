@@ -19,6 +19,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
           source: "Dockerfile, compose.yaml"
           target: cmgoold
 
@@ -29,4 +30,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           post: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
           script: docker compose up --build

@@ -16,7 +16,9 @@ jobs:
         run: docker build -t cmgoold:latest .
 
       - name: Save Docker image
-        run: docker save -o cmgoold.tar cmgoold:latest
+        run: |
+          docker save -o cmgoold.tar cmgoold:latest
+          chmod 664 cmgoold.tar
 
       - name: Copy Docker files to server via scp
         uses: appleboy/scp-action@v0.1.7

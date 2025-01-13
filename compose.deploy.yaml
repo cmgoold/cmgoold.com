@@ -1,0 +1,6 @@
+services:
+  web:
+    image: cmgoold.tar
+    ports:
+      - "8080:8080"
+

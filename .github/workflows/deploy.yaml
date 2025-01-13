@@ -28,7 +28,7 @@ jobs:
           port: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          source: "cmgoold.tar, compose.yaml"
+          source: "cmgoold.tar, compose.deploy.yaml"
           target: cmgoold
 
       - name: Deploy on server
@@ -40,5 +40,5 @@ jobs:
           key: ${{ secrets.KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            docker load cmgoold.tar
-            docker compose up
+            docker load -t cmgoold.tar
+            docker compose -f compose.deploy.yaml up

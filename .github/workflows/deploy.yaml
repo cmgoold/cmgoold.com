@@ -1,7 +1,6 @@
 name: Deploy website
 
 on: 
-  branches: [main]
   pull_request:
     types: [closed]
 

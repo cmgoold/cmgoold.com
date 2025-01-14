@@ -39,10 +39,6 @@ body {
     font-size: var(--body-font-size);
     line-height: var(--line-height);
     vertical-align: var(--vertical-align);
-    margin-right: 40%;
-    margin-top: 1%;
-    margin-left: 2%;
-    margin-bottom: 5%;
 }
 
 @media (min-width: 300px) {
@@ -56,7 +52,7 @@ body {
     body {
         margin-right: 40%;
         margin-top: 1%;
-        margin-left: 2%;
+        margin-left: 10%;
         margin-bottom: 5%;
     }
 }

@@ -15,5 +15,5 @@ RUN cargo build --release --bin cmgoold
 FROM debian:bookworm-slim AS runtime
 WORKDIR /cmgoold
 COPY --from=builder /cmgoold/target/release/cmgoold /usr/local/bin/
-COPY --from=builder /cmgoold/_assets/ /cmgoold/_assets/
+COPY --from=builder /cmgoold/assets/ /cmgoold/assets/
 ENTRYPOINT ["/usr/local/bin/cmgoold"]

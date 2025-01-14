@@ -1,5 +1,5 @@
 :root {
-    --background-color: #f9f5d7; /* #fffff8; /*#f4f5f0; /*#efefef;*/
+    --background-color: #fffff8; /*#f9f5d7; #f4f5f0; #efefef;*/
     --font-color: black;
     --dark-gray-color: #656466; 
     --light-gray-color: #e7e9e7;
@@ -159,4 +159,9 @@ ul.posts li span.tags a {
 }
 
 .datetime {
+}
+
+.filter {
+    font-family: var(--font-monospace);
+    font-size: 1rem;
 }

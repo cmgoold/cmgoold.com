@@ -10,7 +10,7 @@ extern crate lazy_static;
 
 lazy_static! {
     pub static ref TEMPLATES: Tera = {
-        let mut templates = match Tera::new("_assets/templates/**/*.html") {
+        let mut templates = match Tera::new("assets/templates/**/*.html") {
             Ok(t) => t,
             Err(e) => {
                 println!("Parsing error(s): {}", e);
@@ -26,7 +26,7 @@ pub fn serve() -> Result<Server, std::io::Error> {
     let server = HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(TEMPLATES.clone()))
-            .service(Files::new("/styles", "_assets/styles/").use_last_modified(true))
+            .service(Files::new("/styles", "assets/styles/").use_last_modified(true))
             .route("/status", web::get().to(HttpResponse::Ok))
             .service(handlers::index)
             .service(handlers::posts)

@@ -11,6 +11,13 @@
 {% block content %}
 {% include "posts-details.html" %}
 
+{% if tag %}
+    <p class=filter>
+        filter: <code>{{ tag }}</code>
+        <a href="/posts">(reset)</a>
+    </p>
+{% endif %}
+
 <ul class="posts">
     {% for m in metadata %}
         <li>

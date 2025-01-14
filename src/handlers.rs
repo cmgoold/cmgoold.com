@@ -50,6 +50,7 @@ pub async fn posts(templates: web::Data<tera::Tera>, request: HttpRequest) -> im
     };
 
     context.insert("metadata", &metadata);
+    context.insert("tag", &tag);
 
     match templates.render("posts.html", &context) {
         Ok(s) => HttpResponse::Ok().content_type("text/html").body(s),
@@ -123,7 +124,7 @@ fn pull_metadatas(tag: Option<&String>) -> Result<Vec<Metadata>, std::io::Error>
         }
     };
 
-    let file_walker = WalkBuilder::new("./_assets/posts/").types(tomls).build();
+    let file_walker = WalkBuilder::new("./assets/posts/").types(tomls).build();
 
     let mut metadatas = Vec::new();
     for meta in file_walker {
@@ -168,7 +169,7 @@ fn pull_metadatas(tag: Option<&String>) -> Result<Vec<Metadata>, std::io::Error>
 }
 
 fn pull_post(slug: &str) -> Result<String, std::io::Error> {
-    let content = match std::fs::read_to_string(format!("./_assets/posts/{}/post.md", slug)) {
+    let content = match std::fs::read_to_string(format!("./assets/posts/{}/post.md", slug)) {
         Ok(s) => s,
         Err(e) => {
             println!("{:?}", e);
@@ -180,8 +181,8 @@ fn pull_post(slug: &str) -> Result<String, std::io::Error> {
 }
 
 fn pull_metadata(slug: &str) -> Result<Metadata, std::io::Error> {
-    let metadata_path = format!("./_assets/posts/{}/metadata.toml", slug);
-    let post_path_string = format!("./_assets/posts/{}/post.md", slug);
+    let metadata_path = format!("./assets/posts/{}/metadata.toml", slug);
+    let post_path_string = format!("./assets/posts/{}/post.md", slug);
     let post_path = std::path::Path::new(&post_path_string);
     let raw = std::fs::read_to_string(metadata_path)?;
     let edited_date_systime: SystemTime = post_path.metadata().unwrap().modified().unwrap();

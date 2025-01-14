@@ -436,6 +436,7 @@ dependencies = [
  "actix-files",
  "actix-web",
  "chrono",
+ "git2",
  "ignore",
  "lazy_static",
  "pulldown-cmark",
@@ -730,6 +731,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "07e28edb80900c19c28f1072f2e8aeca7fa06b23cd4169cefe1af5aa3260783f"
 
 [[package]]
+name = "git2"
+version = "0.20.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3fda788993cc341f69012feba8bf45c0ba4f3291fcc08e214b4d5a7332d88aff"
+dependencies = [
+ "bitflags",
+ "libc",
+ "libgit2-sys",
+ "log",
+ "openssl-probe",
+ "openssl-sys",
+ "url",
+]
+
+[[package]]
 name = "globset"
 version = "0.4.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -944,10 +960,50 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "561d97a539a36e26a9a5fad1ea11a3039a67714694aaa379433e580854bc3dc5"
 
 [[package]]
+name = "libgit2-sys"
+version = "0.18.0+1.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e1a117465e7e1597e8febea8bb0c410f1c7fb93b1e1cddf34363f8390367ffec"
+dependencies = [
+ "cc",
+ "libc",
+ "libssh2-sys",
+ "libz-sys",
+ "openssl-sys",
+ "pkg-config",
+]
+
+[[package]]
 name = "libm"
 version = "0.2.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ec2a862134d2a7d32d7983ddcdd1c4923530833c9f2ea1a44fc5fa473989058"
+
+[[package]]
+name = "libssh2-sys"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2dc8a030b787e2119a731f1951d6a773e2280c660f8ec4b0f5e1505a386e71ee"
+dependencies = [
+ "cc",
+ "libc",
+ "libz-sys",
+ "openssl-sys",
+ "pkg-config",
+ "vcpkg",
+]
+
+[[package]]
+name = "libz-sys"
+version = "1.1.21"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "df9b68e50e6e0b26f672573834882eb57759f6db9b3be2ea3c35c91188bb4eaa"
+dependencies = [
+ "cc",
+ "libc",
+ "pkg-config",
+ "vcpkg",
+]
 
 [[package]]
 name = "local-channel"
@@ -1083,6 +1139,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "82881c4be219ab5faaf2ad5e5e5ecdff8c66bd7402ca3160975c93b24961afd1"
 dependencies = [
  "portable-atomic",
+]
+
+[[package]]
+name = "openssl-probe"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ff011a302c396a5197692431fc1948019154afc178baf7d8e37367442a4601cf"
+
+[[package]]
+name = "openssl-sys"
+version = "0.9.104"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "45abf306cbf99debc8195b66b7346498d7b10c210de50418b5ccd7ceba08c741"
+dependencies = [
+ "cc",
+ "libc",
+ "pkg-config",
+ "vcpkg",
 ]
 
 [[package]]
@@ -1963,6 +2037,12 @@ name = "v_htmlescape"
 version = "0.15.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4e8257fbc510f0a46eb602c10215901938b5c2a7d5e70fc11483b1d3c9b5b18c"
+
+[[package]]
+name = "vcpkg"
+version = "0.2.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
 
 [[package]]
 name = "version_check"

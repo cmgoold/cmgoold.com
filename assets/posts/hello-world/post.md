@@ -5,8 +5,8 @@ stage. So what's different this time?
 
 While I don't set formal New Year resolutions,
 in recent years I have used the turn of the year
-as some motivation to do something new, however
-small. Last year was reading 50 books (I read 48).
+as motivation to do something new, albeit small.
+Last year was reading 50 books (I read 48).
 The year before that was eating more seasonal and
 local food. 
 This year, I'm going 

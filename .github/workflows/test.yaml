@@ -1,7 +1,9 @@
 name: Test build
 
 on:
-  pull_request
+  pull_request:
+    branches:
+      - main
 
 jobs:
   run_docker:

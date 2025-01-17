@@ -4,9 +4,19 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - src/**
+      - assets/**
+      - nginx/**
+  push:
+    paths:
+      - src/**
+      - assets/**
+      - nginx/**
+
 
 jobs:
-  run_docker:
+  test_docker_image:
     runs-on: ubuntu-latest;
 
     steps:

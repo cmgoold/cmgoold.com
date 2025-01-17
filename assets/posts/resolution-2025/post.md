@@ -48,4 +48,8 @@ links are clearly hightlighted
 and underlined. The styling, light or dark,
 is set depending on your browser's defaults.
 If you notice any issues,
-please reach out on the Github repository.
+please reach out on the [Github repository](
+https://github.com/cmgoold/cmgoold.com) by
+filing a new [issue](
+https://github.com/cmgoold/cmgoold.com/issues/
+).

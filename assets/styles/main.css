@@ -14,7 +14,7 @@
     --font-sans-serif: -apple-system, BlinkMacSystemFont, "segoe ui", roboto, "helvetica neue", "helvetica", arial, sans-serif; /* "Lato", sans-serif; */
     --font-serif: "Apple Garamond", "Iowan Old Style", Baskerville, "Times New Roman", "Droid Serif", Times, "Source Serif Pro", serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     --font-monospace: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
-    --body-font-size: 1.1rem;
+    --body-font-size: 1.2rem;
     --small-font-size: 0.8rem;
     --line-height: 1.4;
     --vertical-align: middle;
@@ -57,9 +57,9 @@ body {
     }
 }
 
-@media (min-width 1000px) {
+@media (min-width: 2000px) {
     body {
-        margin-right: 60%;
+        margin-right: 40%;
         margin-top: 1%;
         margin-left: 10%;
         margin-bottom: 5%;

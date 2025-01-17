@@ -1,0 +1,22 @@
+services:
+
+  nginx:
+    image: nginx:latest;
+    container_name: nginx-proxy;
+    depends_on:
+      - site
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /etc/letsencrypt/live/cmgoold.com/fullchain.pem:/etc/letsencrypt/live/cmgoold.com/fullchain.pem
+      - /etc/letsencrypt/live/cmgoold.com/privkey.pem:/etc/letsencrypt/live/cmgoold.com/fullchain.pem
+      - /etc/nginx/logs/error.log:/etc/nginx/logs/error.log
+      - /etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+
+  site:
+    container_name: cmgoold.com
+    image: cmgoold
+    ports:
+      - 8080:8080
+

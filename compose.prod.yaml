@@ -2,7 +2,7 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: nginx-proxy;
+    container_name: nginx-proxy
     depends_on:
       - site
     ports:
@@ -10,7 +10,7 @@ services:
       - 443:443
     volumes:
       - /etc/letsencrypt/live/cmgoold.com/fullchain.pem:/etc/letsencrypt/live/cmgoold.com/fullchain.pem
-      - /etc/letsencrypt/live/cmgoold.com/privkey.pem:/etc/letsencrypt/live/cmgoold.com/fullchain.pem
+      - /etc/letsencrypt/live/cmgoold.com/privkey.pem:/etc/letsencrypt/live/cmgoold.com/privkey.pem
       - /etc/nginx/logs/error.log:/etc/nginx/logs/error.log
       - /etc/nginx/nginx.conf:/etc/nginx/nginx.conf
 

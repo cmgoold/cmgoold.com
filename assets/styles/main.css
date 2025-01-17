@@ -48,9 +48,18 @@ body {
     }
 }
 
-@media (min-width: 600px) {
+@media (min-width: 768px) {
     body {
         margin-right: 40%;
+        margin-top: 1%;
+        margin-left: 10%;
+        margin-bottom: 5%;
+    }
+}
+
+@media (min-width 1000px) {
+    body {
+        margin-right: 60%;
         margin-top: 1%;
         margin-left: 10%;
         margin-bottom: 5%;
@@ -103,7 +112,7 @@ code {
     font-family: var(--font-monospace);
     font-size: 0.9rem;
     background-color: var(--inline-code-background);
-    border: solid var(--inline-code-border);
+    border: solid 1px var(--inline-code-border);
     padding: 2px;
 }
 
@@ -159,5 +168,5 @@ ul.posts li span.tags a {
 
 .filter {
     font-family: var(--font-monospace);
-    font-size: 1rem;
+    font-size: 0.8rem;
 }

@@ -3,10 +3,6 @@ name: Deploy website
 on: 
   pull_request:
     types: [closed]
-    paths:
-      - src/**
-      - assets/**
-      - nginx/**
 
 jobs:
   deploy:

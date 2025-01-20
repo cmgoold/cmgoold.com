@@ -130,7 +130,7 @@ fn pull_metadatas(tag: Option<&String>) -> Result<Vec<Metadata>, std::io::Error>
     for meta in file_walker {
         match meta {
             Ok(m) => {
-                if m.path().is_file() {
+                if m.path().is_file() && m.path().to_str().unwrap().contains("metadata") {
                     let content = std::fs::read_to_string(m.path())?;
                     let metadata: Metadata = match toml::from_str(&content) {
                         Ok(s) => s,

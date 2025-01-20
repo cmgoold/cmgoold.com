@@ -42,15 +42,22 @@ body {
 }
 
 @media (min-width: 300px) {
+    :root {
+        --right-margin: auto;
+    }
+    
     body {
-        margin: auto;
+        margin: var(--right-margin);
         padding: 20px;
     }
 }
 
 @media (min-width: 768px) {
+    :root {
+        --right-margin: 40%;
+    }
     body {
-        margin-right: 40%;
+        margin-right: var(--right-margin);
         margin-top: 1%;
         margin-left: 10%;
         margin-bottom: 5%;
@@ -58,8 +65,11 @@ body {
 }
 
 @media (min-width: 2000px) {
+    :root {
+        --right-margin: 55%;
+    }
     body {
-        margin-right: 40%;
+        margin-right: var(--right-margin);
         margin-top: 1%;
         margin-left: 10%;
         margin-bottom: 5%;
@@ -141,7 +151,7 @@ ul.posts li span.tags {
 }
 
 ul.posts li span.post-list {
-    flex: 0 0 60%;
+    flex: 0 0 70%;
     white-space: normal;
 }
 

@@ -4,10 +4,14 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - src/**
+      - assets/**
+      - nginx/**
 
 jobs:
   test_docker_build:
-    runs-on: ubuntu-latest;
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code

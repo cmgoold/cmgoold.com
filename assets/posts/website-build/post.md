@@ -240,7 +240,7 @@ to build your site when developing, as you can more
 clearly see the logs. I couldn't get the reverse proxy
 to work for quite a while due to not seeing an erroneous
 path that was assumed in the `nginx.conf` file but
-hadn't created in the Docker container. Running `docker compose
+didn't exist in the Docker container. Running `docker compose
 up -d` swallowed the warning/error message, and I was left
 with just the nginx server running but no re-routing
 of my host URIs.

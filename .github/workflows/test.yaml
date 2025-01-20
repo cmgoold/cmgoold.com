@@ -8,12 +8,6 @@ on:
       - src/**
       - assets/**
       - nginx/**
-  push:
-    paths:
-      - src/**
-      - assets/**
-      - nginx/**
-
 
 jobs:
   test_docker_build:

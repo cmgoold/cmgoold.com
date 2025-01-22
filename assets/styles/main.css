@@ -1,9 +1,10 @@
 :root {
-    --background-color: #fffff8; /*#f9f5d7; #f4f5f0; #efefef;*/
+    --background-color: #f9f8ef; /*#f7f5e9; /*#fffff8; /*#f9f5d7; #f4f5f0; #efefef;*/
     --font-color: black;
     --dark-gray-color: #656466; 
     --light-gray-color: #e7e9e7;
     --light-blue-color: #f9d7f5;
+    --blockquote-color: #f2f2eb;
     --site-name-color: var(--dark-gray-color);
     --tag-color: var(--dark-gray-color);
     --inline-code-background: var(--light-gray-color);
@@ -25,6 +26,7 @@
         --background-color: #0f141a;
         --font-color: #c5c5c5;
         --link-color: #87ceeb;
+        --blockquote-color: #283544;
         --inline-code-background: #3b302f;
         --inline-code-border: var(--dark-gray-color);
         --site-name-color: var(--font-color);
@@ -126,6 +128,13 @@ code {
     padding: 2px;
 }
 
+pre code.hljs:first-line {
+    line-height: 0;
+}
+
+pre code.hljs {
+    white-space: preserve;
+}
 
 ul.posts {
     list-style-type: none;
@@ -180,3 +189,8 @@ ul.posts li span.tags a {
     font-family: var(--font-monospace);
     font-size: 0.8rem;
 }
+
+blockquote {
+    background: var(--blockquote-color);
+    border-left: 5px solid;
+    padding: 1%;

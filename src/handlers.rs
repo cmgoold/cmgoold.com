@@ -1,6 +1,5 @@
 use actix_web::{get, web, HttpResponse, HttpRequest, Responder};
 use ignore::WalkBuilder;
-use pulldown_cmark::{html, Options, Parser};
 use std::time::SystemTime;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
@@ -88,15 +87,7 @@ pub async fn post(templates: web::Data<tera::Tera>, slug: web::Path<String>) -> 
         }
     };
 
-    let mut options = Options::empty();
-    options.insert(Options::ENABLE_MATH);
-    options.insert(Options::ENABLE_YAML_STYLE_METADATA_BLOCKS);
-    let parser = Parser::new_ext(&post, options);
-
-    let mut output = String::new();
-    html::push_html(&mut output, parser);
-
-    context.insert("post", &output);
+    context.insert("post", &post);
     context.insert("metadata", &metadata);
 
     match templates.render("post.html", &context) {
@@ -169,7 +160,7 @@ fn pull_metadatas(tag: Option<&String>) -> Result<Vec<Metadata>, std::io::Error>
 }
 
 fn pull_post(slug: &str) -> Result<String, std::io::Error> {
-    let content = match std::fs::read_to_string(format!("./assets/posts/{}/post.md", slug)) {
+    let content = match std::fs::read_to_string(format!("./assets/posts/{}/post.html", slug)) {
         Ok(s) => s,
         Err(e) => {
             println!("{:?}", e);
@@ -182,7 +173,7 @@ fn pull_post(slug: &str) -> Result<String, std::io::Error> {
 
 fn pull_metadata(slug: &str) -> Result<Metadata, std::io::Error> {
     let metadata_path = format!("./assets/posts/{}/metadata.toml", slug);
-    let post_path_string = format!("./assets/posts/{}/post.md", slug);
+    let post_path_string = format!("./assets/posts/{}/post.html", slug);
     let post_path = std::path::Path::new(&post_path_string);
     let raw = std::fs::read_to_string(metadata_path)?;
     let edited_date_systime: SystemTime = post_path.metadata().unwrap().modified().unwrap();

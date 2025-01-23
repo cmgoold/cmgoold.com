@@ -1,0 +1,446 @@
+<p>The third series of BBC's <em>The Traitors</em> is entering its
+final week in the UK. 
+If you haven't seen it, 
+contestants live together for a number of weeks
+in a grandiose Scottish castle
+and complete challenges to add money to a common prize pot.
+An unknown number of the contestants are chosen at the
+start to be <em>traitors</em>, while the rest are <em>faithful</em>.
+It's the traitors' job to, each night, 
+'murder' the faithfuls, i.e.
+banish them from the game, and take the whole
+prize money themselves.
+It's the faithfuls' job to, through daily round-table
+discussions, figure out who the traitors are and banish
+<em>them</em> from the game, 
+splitting the prize money between themselves.
+Chaos ensues.</p>
+
+<p>How do faithfuls decide who to vote for?
+There are a number of potential
+streams of evidence, one of which is the 
+voting patterns of individual players
+at past round-table discussions. If a player
+has a record of not correctly voting for
+discovered traitors when other players
+have correctly voted out traitors, they
+are immediately suspected themselves as traitorous.
+And it makes sense that, backstabbing aside,
+traitors should be less likely to vote for
+other traitors than faithfuls.</p>
+
+<p>But how much can faithfuls actually trust past voting
+habits of their fellow players?
+</p>
+
+<p>Whether someone is a traitor
+or not is an unknown,
+discrete random variable, which we can
+estimate from data on voting patterns.
+In essence, this is a discrete mixture modelling
+problem. And this got me thinking about the relationships
+between mixture modelling and model averaging,
+a topic I've been working on in my professional
+life,
+and how to conduct model averaging as mixture modelling
+in software such as Stan.
+</p>
+
+<p>John Kruschke, the author of 
+<a href="https://sites.google.com/site/doingbayesiandataanalysis/">Doing Bayesian Data Analysis</a>,
+defines Bayesian analysis as a reallocation of credibility
+across possible parameter values. 
+Bayesian model averaging is, similarly,
+a reallocation of credibility across possible models.
+Those models are different views of the data generating
+processes. 
+The goal of Bayesian model averaging is to
+estimate each model's posterior probability consistent
+with the data. These probabilities are the
+<em>posterior model probabilities</em>, and
+can be used to produce weighted averages of model
+predictions rather than relying on any one single
+model.</p>
+
+<p>
+Estimating these posterior model probabilities
+in practice is often challenging due to the computation
+of marginal likelihoods (e.g. see
+<a href=https://projecteuclid.org/journals/statistical-science/volume-14/issue-4/Bayesian-model-averaging--a-tutorial-with-comments-by-M/10.1214/ss/1009212519.full>Hoeting et al. 1999</a>).
+An alternative and, to me,
+more intuitive way of thinking of Bayesian model
+averaging is as a type of discrete mixture modelling.
+That is, multiple plausible models can be linked
+through a discrete indicator parameter, and learning
+this parameter encodes the same
+information as the posterior model probabilities.</p>
+
+<p>If you're familiar with the probabilistic
+programming language 
+<a href=https://mc-stan.org>Stan</a>, 
+you might have stumbled over the
+topic of Bayesian model averaging before.
+And you also might have might have learned at some
+point that Stan cannot estimate discrete parameters
+because it depends on Hamiltonian Monte Carlo, a Markov
+chain Monte Carlo variant that depends on calculating derivatives.
+As you cannot calculate the gradient of a discrete parameter,
+you cannot estimate the discrete parameter in Stan, as you
+might in, for instance, BUGS or JAGS.
+For users of Stan wanting to fit models with
+discrete parameters, this can present, initially,
+a vexing challenge. 
+Indeed, estimation of discrete parameters receives
+quite a bit of discussion on the Stan discussion forums.
+Andrew Gelman also dedicated a 
+<a href=https://statmodeling.stat.columbia.edu/2016/10/26/hierarchical-mixture-model-stan/>blog post</a>
+to clearing up confusion over the
+estimation of mixture models in Stan for a model
+originally proposed by John Kruschke in his book
+as an example of
+Bayesian model averaging.</p>
+
+<p>Let's use the context of
+<em>The Traitors</em> to build some intuition
+about how Bayesian model averaging and discrete mixture
+modelling are related, and address the difficulties
+with estimating discrete parameters in Stan.
+</p>
+
+<p>
+Imagine the round-table discussions on <em>The Traitors</em>.
+For each round table, denoted $i = 1, ..., N$,
+and for each player, denoted $j = 1, ..., M$,
+players cast their vote, $v_{ij}$,
+for who they believe the traitor is. 
+Votes are a discrete
+random variable that assigns $v_{ij} = 1$ if a vote correctly
+identifies a traitor, or
+$v_{ij} = 0$ if the vote incorrectly
+identifies a faithful. 
+While there certainly are some backstabbing strategies
+where traitors vote for each other, we'd usually expect traitors
+to be less likely to vote for their fellow murderers than
+faithfuls, all else being equal and assuming rational game-play.
+In reality, players are anything but rational.</p>
+
+<p>Now assume that, like faithfuls, 
+we don't know who the traitors are,
+and would like to model the probability that someone
+is a traitor based on their voting patterns. This
+is just one piece of evidence that a faithful
+might use to detect a traitor.</p>
+
+<p>
+Assume that votes are Bernoulli distributed,
+with probability $\theta$, and that $\theta$
+depends on being a traitor or not, 
+denoted by the discrete random variable
+$Z = \{\mathrm{traitor}, \mathrm{faithful}\}
+= \{z_{T}, z_{F}\}$. I'll treat this variable as a
+Bernoulli random variable where $z = 1$ indicates
+a traitor below, although I will also swap in the
+$\{z_{T}, z_{F}\}$ notation when it makes sense.
+We'll keep things easy and assume that
+we evaluate one player's set of past voting habits
+individually, removing the need for the subscript
+$j$. Implicit in this model is also that
+the past voting habits are all related to a
+single traitor or faithful status. In reality,
+faithfuls may be recruited into being a traitor,
+an extension to our model I might consider adding 
+in a future post.
+Here's this model written down mathematically, with
+some constants added:
+</p>
+
+$$
+\begin{align}
+    v_{i} &\sim \text{Bernoulli}(\theta) \\
+    \theta &= 0.05 z + 0.25 (1 - z)\\
+    z &\sim \mathrm{Bernoulli}(\pi)\\
+    \pi &= \frac{3}{N}\\
+\end{align}
+$$
+
+<p>This model defines the joint probability
+of the data and unknown parameters, $p(v, z)$,
+as that is what a statistical model is.
+$\theta$ and $\pi$ are constants here, 
+and so do not need to be estimated.</p>
+
+<p>I've set the probability of a traitor voting
+for another traitor, $p(v_{i} = 1 \mid z_{T})$,
+equal to 5%, and the probability of a faithful
+correctly finding a traitor, $p(v_{i} = 1 \mid z_{F})$,
+at 25%. I could deliberate over whether this is
+appropriate, but it's not particularly important.
+We don't know the discrete state $z$, so the probability
+of being a traitor receives a Bernoulli prior
+distribution with probability $\pi$, set
+to $\frac{3}{N}$. This is from the fact that, at
+any one time, there's at most (usually) 3 traitors.
+We should really put a distribution on this value,
+but we'll keep things simple for now.
+</p>
+
+<p>Anyone familiar with Bayesian modelling will recognise
+that this is a very introductory example to Bayes' rule, and
+we can estimate the posterior probability that an individual is a traitor
+using Bayes' rule directly.</p>
+
+$$
+\begin{align}
+p(z_{T} \mid v) &= \frac{p(v \mid z_{T}) p(z_{T}, \pi)}{
+        p(v | z_{T}) p(z_{T}, \pi) + p(v \mid z_{F}) p(z_{F}, \pi)
+    }\\ \\
+    &= \frac{\mathrm{Bernoulli}(z_{T} \mid \pi) \Pi_{i=1}^{N} \mathrm{Bernoulli}(v_i \mid \theta)}{
+    p(z_{T}) \Pi_{i=1}^{N} \mathrm{Bernoulli}(v_i \mid \theta) + 
+    p(z_{F}) \Pi_{i=1}^{N} \mathrm{Bernoulli}(v_i \mid \theta) 
+    }
+\end{align}
+$$
+
+<p>Let's say we observe a 
+sequence of 10 round-table votes for
+a particular player like
+$v = (0, 0, 1, 0, 1, 1, 0, 0, 0, 1)$
+for a player over ten round-tables.
+We can calculate $p(z_{T} \mid v)$ by
+plugging in the appropriate values in the formula
+above. Note, the product of Bernoulli probability mass
+functions above 
+can be simplified to 
+$\theta^{\sum_{N} v} (1 - \theta)^{N - \sum_N v}$:</p>
+
+$$
+\begin{align}
+    p(z_{T} \mid v) &= \frac{
+    0.3 \cdot 0.05^4 \cdot (1 - 0.05)^6
+    }{
+    0.3 \cdot 0.05^4 \cdot (1 - 0.05)^6 + 
+    (1 - 0.3) \cdot 0.25^4 \cdot (1 - 0.25)^6
+    }  \\ \\
+    &= 0.00282
+\end{align}
+$$
+
+<p>So, only 0.28% likely to be a traitor given
+4 correct votes out of 10. This makes some
+sense because a 40% success rate in voting
+for traitors is pretty un-traitorous.</p>
+
+<p>Here's a slightly different way of posing
+the above calculation.</p>
+
+$$
+\begin{align}
+p(m_{k} | v) &= \frac{p(v | m_{k}) p(m_{k})}{\sum_{k=1}^{K}p(m_k) p(v | m_{k})}\\
+\end{align}
+$$
+
+<p>where $m_{k}$ indicates 'model $k$', for
+$k = 1, ..., K$ possible models.
+In our example, we have two possible 'models',
+being a traitor or being a faithful, and the
+prior distributions are all constants.
+Therefore, $p(v \mid m_{1} = z_{T})$ really just
+reduces to $p(v \mid z_{T})$ and $p(m_{1} = z_{T})$
+is really just $p(z_{T}, \pi)$, as we used above.
+Therefore, $p(z_{T} \mid v)$ above gives us the posterior
+model probability of being a traitor of
+0.28%. We can turn this into a Bayes factor using:
+
+$$
+\begin{align}
+\mathrm{BF} &= \frac{p(z_{T} \mid v)}{p(z_{F} \mid v)}\\\\
+&= \frac{0.05^4 (1 - 0.05)^6}{0.25^4 (1 - 0.25)^6}\\\\
+&= 0.0066
+\end{align}
+$$
+
+<p>Bayes' factors less than 1/3 are deemed
+strong evidence against the proposed hypothesis
+or model, so the sequence of
+data is highly unlikely to be provided by a 
+traitor.
+For this contrived example, we have
+just computed a discrete mixture model and
+conducted Bayesian model averaging.
+</p>
+
+<p>We don't need any approximate methods, like
+Markov chain Monte Carlo, to estimate the posterior
+probability of someone being a traitor here, as
+we can work it out analytically. However, many people do
+need to estimate discrete parameters in their models,
+and so this simple example is a useful launching point
+to understand how to write it out in languages such as
+Stan.</p>
+
+<p>We could estimate this
+model using a probabilistic programming
+language that allows discrete parameter
+estimation, like JAGS, with something like
+the following code:</p>
+9
+<pre><code class="language-jags hljs">
+model {
+    pi <- 3 / N
+    z ~ dbern(pi)
+    theta <- 0.05 * z + 0.25 * (1 - z)
+    for(i in 1:N) {
+        v[i] ~ dbern(theta)
+    }
+}
+</code></pre>
+
+<p>For each iteration in the MCMC sampling,
+JAGS will sample a value for <code>z</code>,
+calculate <code>theta</code>, and estimate
+the Bernoulli likelihood using <code>dbern(theta)</code>.
+Running this code will result in samples of
+<code>z</code> with a mean very close to 0.0028,
+taking into account random variation in the MCMC
+seed. For one seed, I get 0.00275
+</p>
+
+<p>We cannot estimate $p(z \mid \pi)$ directly in Stan because
+it's discrete. In other words, we can't write a statement that says
+<code>z ~ Bernoulli(pi)</code> like we have in the JAGS code.
+Instead, we need to 
+<a href=https://en.wikipedia.org/wiki/Law_of_total_probability>
+    marginalise
+</a>
+$z$ out of the joint probability statement, and calculate it post-hoc.
+As we are dealing with discrete parameters, marginalising is
+just summing out the latent parameter possibilities.
+</p>
+
+$$
+\begin{align}
+    p(v) &= \sum_{z_k} p(v, z_{k}) \\
+    &= \sum_{z_k} p(v \mid z_{k}) p(z_{k} \mid \pi)
+\end{align}
+$$
+
+<p>for $z_{k} \in \{z_{T}, z_{F}\}$.
+To calculate $p(z_{T} \mid v)$ afterwards, we need
+to use Bayes' rule, as we did above.<p>
+
+$$
+\begin{equation}
+p(z_{T} \mid v) = \frac{p(z_{T} \mid \pi) p(v \mid z_{T})}{
+    p(z_{T} \mid \pi) p(v \mid z_{T}) +
+    p(z_{F} \mid \pi) p(v \mid z_{F})
+    }
+\end{equation}
+$$
+
+<p>Here's what all this would look like in Stan code.</p>
+
+<pre><code class="language-stan hljs">
+data {
+    int&ltlower=0> N;
+    array[N] int&ltlower=0, upper=1> v;
+}
+
+transformed data {
+    int&ltlower=0> K = 2;
+    real&ltlower=0, upper=1> pi = 3.0 / N;
+    vector&ltlower=0, upper=1>[K] theta = [0.05, 0.25]';
+}
+
+transformed parameters {
+    vector[K] lp = [log(pi), log1m(pi)]';
+
+    for(i in 1:N){
+        for(k in 1:2)
+            lp[k] += bernoulli_lpmf(v[i] | theta[k]);
+    }
+}
+
+model {
+    target += log_sum_exp(lp);
+}
+
+generated quantities {
+    simplex[K] p_z;
+    int&ltlower=0, upper=1> z;
+    p_z = softmax(lp);
+    z = bernoulli_rng(p_z[1]);
+}
+</code></pre>
+
+<p>I defined a vector of size K=2, for our two possible
+states of being a traitor or being a faithful,
+as <code>lp</code> to hold the log joint probability
+of being in each state as evidence accumulates.
+The total log joint probability is added to <code>target</code>
+in the <code>model</code> block using the log-sum-exp
+function, which safely computes the marginalisation of
+$\log(p(v, z_{T}) + p(v, z_{F}))$ on the log scale.
+</p>
+
+<p>Running this example using 
+<a href=https://github.com/cmgoold/cmgoold.com/blob/main/assets/posts/bma-stan/code/>the code</a>
+recovers our analytical result.</p>
+
+<pre><code class="language-python hljs">
+from cmdstanpy import CmdStanModel, CmdStanMCMC 
+
+SEED: int = 1234
+mixture: CmdStanModel = CmdStanModel(stan_file="mixture.stan")
+v: list[int] = [0, 0, 1, 0, 1, 1, 0, 0, 0, 1]
+
+fit: CmdStanMCMC = mixture.sample(
+    data={"N": len(v), "v": v}, 
+    seed=SEED
+)
+print(fit.p_z.T[0].mean())
+print(fit.z.mean())
+</code></pre>
+
+<p>The analytical result
+of <code>p_z.T[0]</code> is 0.00282, exactly as above,
+as we'd expect it to be. For this example,
+the posterior distribution of <code>z</code>
+has a mean of 0.0025, which will bounce around
+the true expectation of 0.0028 depending
+on the precision of the MCMC samples.</p>
+
+<h2>Can we really detect a traitor?</h2>
+
+<p>What happens when we observe a sequence like
+$v = (0, 0, 0, 0, 1, 0, 0, 1, 0, 0)$, with
+only 2 correct answers? Surely that's pretty
+damning evidence of being a traitor?</p>
+
+<p>Well, cranking our Bayesian algebra again
+shows that the posterior probability of being
+a traitor is still only 10%.
+Even, if someone only correctly voted for a traitor
+once in 10 round tables, the probability of
+being a traitor increases substantially, 
+but only to approximately 42%. This is a Bayes factor of
+1.68 in favour of being a traitor, which
+is still far below the threshold of 3 to count
+as strong evidence in favour of that supposition.</p>
+
+<p>As anyone familiar with Bayes' rule will know,
+the posterior probability is a weighted average
+of a prior or base rate probability and the likelihood.
+In this case, because contestants are much more likely to
+be a traitor than faithful, we need much more data to
+overcome that slim chance of detecting a traitor.
+With 20 votes, and only one correct vote for a traitor,
+we have about a 88% chance of detecting a traitor, for instance.
+</p>
+
+<p>Even for this simple model, where there is no uncertainty
+about our $\pi$ and $\theta$ parameters, detecting
+a traitor is pretty hard with the amount of data available.
+Considering there might only be around 9 or 10 round table
+votes in a series, there is very little evidence to go on
+for the faithfuls. No wonder it's chaos.
+</p>

@@ -1,0 +1,8 @@
+model {
+    pi <- 3 / N
+    z ~ dbern(pi)
+    theta <- 0.05 * z + 0.25 * (1 - z)
+    for(i in 1:N) {
+        v[i] ~ dbern(theta)
+    }
+}

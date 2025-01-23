@@ -1,0 +1,262 @@
+<p>In 2025, building your own website can be as easy
+or hard as you want it to be.
+There are plenty of platforms out there, of
+varying prices, morals and ethics, that
+can make you a website in minutes.
+For people who want slightly more control,
+there are a variety of static site generators
+in the programming language of your choice, 
+as well as easy hosting options such as 
+Github pages. Or you could go with a dedicated
+blogging platform such as <a href="https://bearblog.dev/">
+    Bear Blog</a>
+that provides a relatively cheap all-in-one service
+with some degree of autonomy.</p>
+
+<p>My approach to building this website was
+not only to produce a site that I could
+maintain completely independently,
+following the IndieWeb 
+<a href="https://indieweb.org/principles">key principles</a>,
+but also to 
+learn more web development.
+In particular, becoming more confident 
+hooking up all the interlocking pieces 
+of software needed
+to host a website end-to-end. Here's how
+I did it.
+
+<h2>Structure</h2>
+<p>If you're new to building software, even if
+you have some coding experience, it can be
+overwhelming learning which software does
+what and interlacing all their dependencies
+in the most optimal and safest manner. 
+Personally, I find this the more difficult task
+when approaching new software than using the
+software itself.
+So at a high level, this is what is going on to 
+produce this web page:
+
+<ul>
+    <li>A backend web-framework written in
+    <a href="https://www.rust-lang.org">Rust</a>, which builds
+    the HTML files from templates, handles all
+    the URL routing, CSS styling, and serves the site on the
+    local web server of the machine running the code.</li>
+    <br>
+    <li>The Rust code is packaged into a
+    <a href="https://www.docker.com">Docker</a> container,
+    meaning all the code can be served using a simple
+    call to <code>docker compose up</code>.</li>
+    <br>
+    <li>The code is hosted at a
+    <a href="https://github.com/cmgoold/cmgoold.com/">
+        Github repository
+    </a>
+    and 
+    <a href=https://github.com/cmgoold/cmgoold.com/tree/main/.github/workflows>
+        Github Actions
+     </a> are used to build the Docker image and copy it to a 
+    <a href="https://www.hetzner.com/">
+             Hetzner
+    </a>
+    virtual private
+    server connected to the internet and remotely
+    accessible with SSH.
+    The builds are currently only triggered on
+    merged pull requests to the `main`
+    branch, but another possibility
+    is to set up automated builds at a cadence
+    that makes sense.</li>
+    <br>
+    <li>The virtual server's IP address points to
+        my domain name <code>cmgoold.com</code>, 
+    meaning that I can use
+    <code>http://cmgoold.com:<port></code> to access my website
+    rather than <code>http://<long-ip-address>:<port></code>.</li>
+    <br>
+    <li>Finally, I use 
+        <a href="https://nginx.org/en/">nginx</a>
+     as a reverse proxy to route
+     <code>http://cmgoold.com:<port></code> to both 
+     <code>http://cmgoold.com</code>
+     and it's safer default variant <code>https://cmgoold.com</code>.
+     Of course, you can just type <code>cmgoold.com</code> 
+     and it will take you to the HTTPS-enabled site directly, 
+     all thanks to nginx.</li>
+</ul></p>
+
+<h2>Building a website using Rust</h2>
+<p>This website's tooling
+is no doubt overkill for what could
+have been made via any of the static site generators
+out there. But I've been dappling with Rust for
+a little while now, and wanted a more involved
+project to build some Rust muscle memory.
+I would also like to maintain this site in the long
+term and its functionality is still open-ended.
+The current setup provides me autonomy
+and flexibility.</p>
+
+<p>I am using the Rust crate
+<a href=https://docs.rs/actix-web/latest/actix_web/>
+    <code>actix_web</code>
+</a>
+as the web framework. Rust has a number of
+crates for web development, although none
+quite as expansive as something like
+<a href=https://rubyonrails.org>Ruby on Rails</a>
+or Python's <a href=https://www.djangoproject.com>
+    Django
+</a>
+or PHP's <a href=https://laravel.com>Laravel</a>.
+<code>actix_web</code> appeared to be relatively mature
+compared to some other Rust crates, and has features
+such as asynchronous handlers.</p>
+
+<p>Here's the 'hello world' equivalent for
+web development in <code>actix_web</code>. 
+Assuming you have Rust installed, run:</p>
+
+<pre><code class="language-bash hljs">cargo new my-site && cd my-site</code></pre>
+
+<p>and edit the <code>Cargo.toml</code> file to include:</p>
+
+<pre><code class="language-toml hljs">
+[dependencies]
+actix-web = "4" # change to the most recent version
+</code></pre>
+
+<p>In <code>src/main.rs</code> add the following code:</p>
+
+<pre><code class="language-rust">
+use actix_web::{get, web, App, HttpServer, Responder};
+
+#[get("/")]
+async fn index() -> impl Responder {
+    "Hello, World!"
+}
+
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| App::new().service(index))
+        .bind(("127.0.0.1", 8080))?
+        .run()
+        .await
+}
+</code></pre>
+
+<p>Enter <code>http://127.0.0.1:8080</code> into your web browser
+and you should see "Hello, World!" on a blank page.</p>
+
+<p>The code for this small example is available in this
+post's directory at the 
+<a href=https://github.com/cmgoold/cmgoold.com/blob/main/assets/posts/website-build/my-site/>Github repository</a>.</p>
+
+<p>I initially followed the blog by
+<a href=https://mortenvistisen.com/posts/how-to-build-a-simple-blog-using-rust>Morten Vistisen</a> to create this website, 
+but the above bare-bones
+approach is really all you need to get started.
+You can expand by defining additional service functions
+(like <code>index()</code> above) in a separate file, like the 
+<a href=https://github.com/cmgoold/cmgoold.com/blob/main/src/handlers.rs>
+    <code>handlers.rs</code>
+</a> file I use, and adding in HTML templates using
+<a href=https://keats.github.io/tera/docs/>Tera</a>, to which you
+can layer on CSS styling or other frameworks of your choice.
+
+<h2>Writing posts in HTML</h2>
+
+<p>I'm not the biggest lover of mark-up languages
+like Markdown or reStructuredText.
+I'm perhaps one of the minority that
+like to retain the control of the lower-level
+language and not add an additional package to the
+workflow. I've also run into issues with mark-up languages
+where, at some point, a feature is not available without
+esoteric workarounds, or with static site
+generators where certain HTML classes are not clearly
+accessible, and other odd bugs.</p>
+
+<p>A first version of this site used Markdown to write posts, 
+but I've since changed to using raw HTML.
+I ran into issues rendering LaTeX math environments,
+and that is a necessary feature here.
+While raw HTML is slightly more bloated, I'm quite
+used to writing in e.g. LaTeX, and so it doesn't
+pose too much of an inconvenience.</p>
+
+<p>The post metadata is stored in a <code>metadata.toml</code> TOML file.
+This idea was taken from
+<a href=https://mortenvistisen.com/posts/how-to-build-a-simple-blog-using-rust</a>Morten Vistisen's</a> blog post.</p>
+
+<h2>Choosing Hetzner</h2>
+<p>I deliberated for a quite a while on how to actually
+host this site. I wanted to go with a more local
+company that used renewable energy to power their
+own servers, like Krystal, but I also wanted control
+over how I deployed my website. I wanted to spin up
+a Docker image directly, and I couldn't quite see
+how that was possible with some of my preferred
+vendors. Hetzner is a well-known name in the area
+with servers in Europe that are well-protected by
+data protection laws. They have a pretty good
+<a href=https://www.hetzner.com/unternehmen/nachhaltigkeit/>
+    sustainability statement
+</a>
+that mentions renewable energy, although I found
+it slightly more difficult to find than some
+other options. Take from that what you will,
+I'm definitely not an expert on this topic.</p>
+
+<p>In terms of cost, I chose the cheapest plan
+at about \$5 per month, which is a shared vCPU
+with 4 GB of RAM and 40 GB of inbuilt storage.
+I think this will be fine for my needs,
+and I wouldn't want to spend anything more than
+\$5 a month.
+They have plenty of additional plans should
+you need it, or I in the future, however.</p>
+
+<p>The Hetzner setup was pretty smooth sailing if you're
+comfortable with basic server terminology and
+logging in remotely by, ideally, SSH.</p>
+
+<h2>nginx reverse proxy</h2>
+
+<p>To clean up the site URLs, I used nginx
+as a reverse proxy, along with using
+<a href=https://letsencrypt.org/>Let's Encrypt</a>
+and 
+<a href=https://certbot.eff.org/>Certbot</a>
+to generate SSL certificates to enable HTTPS.
+I added nginx into my
+<a href=https://github.com/cmgoold/cmgoold.com/blob/main/compose.prod.yaml>
+    <code>compose-prod.yaml</code>o</a>
+file.</p>
+
+<p>You can see my
+<a href=https://github.com/cmgoold/cmgoold.com/blob/main/nginx/nginx.conf>
+    <code>nginx.conf</code>
+</a>
+file if you need the details, and how it
+interacts with with the <code>compose.prod.yaml</code> workflow.
+One simple tip if you are going this route: use 
+<code>docker compose up</code> rather than <code>docker compose up -d</code>
+to build your site when developing, as you can more
+clearly see the logs. I couldn't get the reverse proxy
+to work for quite a while due to not seeing an erroneous
+path that was assumed in the <code>nginx.conf</code> file but
+didn't exist in the Docker container. Running 
+<code>docker compose up -d</code> swallowed the 
+warning/error message, and I was left
+with just the nginx server running but no re-routing
+of my host URIs.</p>
+
+<h2>Adding tests</h2>
+
+<p>I still need to add unit and integration tests for this site.
+I have a development Docker compose file that is built as a 
+Github action, but that's only a placeholder for more
+specific end-to-end tests.</p>

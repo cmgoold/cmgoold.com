@@ -48,9 +48,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.role is None and args.test:
-        v = [0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
-        p_z_t = 0.12 * 0.05 ** sum(v) * (1 - 0.05) ** (len(v) - sum(v))
-        p_z_t /= p_z_t + (1 - 0.12) * 0.25 ** sum(v) * (1 - 0.25) ** (len(v) - sum(v))
+        v = [0, 0, 1, 0, 1, 1, 0, 0, 0, 1]
+        p_z_t = 3 / len(v) * 0.05 ** sum(v) * (1 - 0.05) ** (len(v) - sum(v))
+        p_z_t /= p_z_t + (1 - 3 / len(v)) * 0.25 ** sum(v) * (1 - 0.25) ** (len(v) - sum(v))
         fit = fit_mixture(v)
         print(fit.summary())
         assert np.isclose(fit.p_z.T[0].mean(), p_z_t)

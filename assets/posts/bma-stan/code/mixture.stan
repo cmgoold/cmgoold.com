@@ -5,7 +5,7 @@ data {
 
 transformed data {
     int<lower=0> K = 2;
-    real<lower=0, upper=1> pi = 0.12;
+    real<lower=0, upper=1> pi = 3.0 / N;
     vector<lower=0, upper=1>[K] theta = [0.05, 0.25]';
 }
 

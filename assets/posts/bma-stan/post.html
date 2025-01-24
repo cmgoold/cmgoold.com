@@ -80,7 +80,7 @@ programming language
 <a href=https://mc-stan.org>Stan</a>, 
 you might have stumbled over the
 topic of Bayesian model averaging before.
-And you also might have might have learned at some
+And you also might have learned at some
 point that Stan cannot estimate discrete parameters
 because it depends on Hamiltonian Monte Carlo, a Markov
 chain Monte Carlo variant that depends on calculating derivatives.
@@ -159,7 +159,7 @@ $$
     v_{i} &\sim \text{Bernoulli}(\theta) \\
     \theta &= 0.05 z + 0.25 (1 - z)\\
     z &\sim \mathrm{Bernoulli}(\pi)\\
-    \pi &= \frac{3}{N}\\
+    \pi &= \frac{3}{M}\\
 \end{align}
 $$
 
@@ -178,8 +178,9 @@ appropriate, but it's not particularly important.
 We don't know the discrete state $z$, so the probability
 of being a traitor receives a Bernoulli prior
 distribution with probability $\pi$, set
-to $\frac{3}{N}$. This is from the fact that, at
-any one time, there's at most (usually) 3 traitors.
+to $\frac{3}{M}$. This is from the fact that, at
+any one time, there's at most (usually) 3 traitors
+out of $M$ total players.
 We should really put a distribution on this value,
 but we'll keep things simple for now.
 </p>
@@ -204,8 +205,9 @@ $$
 <p>Let's say we observe a 
 sequence of 10 round-table votes for
 a particular player like
-$v = (0, 0, 1, 0, 1, 1, 0, 0, 0, 1)$
-for a player over ten round-tables.
+$v = (0, 0, 1, 0, 1, 1, 0, 0, 0, 1)$.
+And, for simplicity, let's set the number
+of players at 10 also.
 We can calculate $p(z_{T} \mid v)$ by
 plugging in the appropriate values in the formula
 above. Note, the product of Bernoulli probability mass
@@ -283,7 +285,7 @@ model using a probabilistic programming
 language that allows discrete parameter
 estimation, like JAGS, with something like
 the following code:</p>
-9
+ 
 <pre><code class="language-jags hljs">
 model {
     pi <- 3 / N
@@ -401,8 +403,8 @@ print(fit.p_z.T[0].mean())
 print(fit.z.mean())
 </code></pre>
 
-<p>The analytical result
-of <code>p_z.T[0]</code> is 0.00282, exactly as above,
+<p>The result
+of <code>p_z.T[0].mean()</code> is 0.00282, exactly as above,
 as we'd expect it to be. For this example,
 the posterior distribution of <code>z</code>
 has a mean of 0.0025, which will bounce around

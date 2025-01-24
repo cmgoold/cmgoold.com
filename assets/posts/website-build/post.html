@@ -9,7 +9,7 @@ in the programming language of your choice,
 as well as easy hosting options such as 
 Github pages. Or you could go with a dedicated
 blogging platform such as <a href="https://bearblog.dev/">
-    Bear Blog</a>
+Bear Blog</a>
 that provides a relatively cheap all-in-one service
 with some degree of autonomy.</p>
 
@@ -52,20 +52,15 @@ produce this web page:
     <br>
     <li>The code is hosted at a
     <a href="https://github.com/cmgoold/cmgoold.com/">
-        Github repository
-    </a>
-    and 
+    Github repository</a> and 
     <a href=https://github.com/cmgoold/cmgoold.com/tree/main/.github/workflows>
-        Github Actions
-     </a> are used to build the Docker image and copy it to a 
-    <a href="https://www.hetzner.com/">
-             Hetzner
-    </a>
+    Github Actions</a> are used to build the Docker image and copy it to a 
+    <a href="https://www.hetzner.com/">Hetzner</a>
     virtual private
     server connected to the internet and remotely
     accessible with SSH.
     The builds are currently only triggered on
-    merged pull requests to the `main`
+    merged pull requests to the <code>main</code>
     branch, but another possibility
     is to set up automated builds at a cadence
     that makes sense.</li>
@@ -101,15 +96,13 @@ and flexibility.</p>
 
 <p>I am using the Rust crate
 <a href=https://docs.rs/actix-web/latest/actix_web/>
-    <code>actix_web</code>
-</a>
+<code>actix_web</code></a>
 as the web framework. Rust has a number of
 crates for web development, although none
 quite as expansive as something like
 <a href=https://rubyonrails.org>Ruby on Rails</a>
 or Python's <a href=https://www.djangoproject.com>
-    Django
-</a>
+Django</a>
 or PHP's <a href=https://laravel.com>Laravel</a>.
 <code>actix_web</code> appeared to be relatively mature
 compared to some other Rust crates, and has features
@@ -161,8 +154,7 @@ approach is really all you need to get started.
 You can expand by defining additional service functions
 (like <code>index()</code> above) in a separate file, like the 
 <a href=https://github.com/cmgoold/cmgoold.com/blob/main/src/handlers.rs>
-    <code>handlers.rs</code>
-</a> file I use, and adding in HTML templates using
+<code>handlers.rs</code></a> file I use, and adding in HTML templates using
 <a href=https://keats.github.io/tera/docs/>Tera</a>, to which you
 can layer on CSS styling or other frameworks of your choice.
 
@@ -203,8 +195,7 @@ vendors. Hetzner is a well-known name in the area
 with servers in Europe that are well-protected by
 data protection laws. They have a pretty good
 <a href=https://www.hetzner.com/unternehmen/nachhaltigkeit/>
-    sustainability statement
-</a>
+sustainability statement</a>
 that mentions renewable energy, although I found
 it slightly more difficult to find than some
 other options. Take from that what you will,
@@ -233,8 +224,7 @@ and
 to generate SSL certificates to enable HTTPS.
 I added nginx into my
 <a href=https://github.com/cmgoold/cmgoold.com/blob/main/compose.prod.yaml>
-    <code>compose-prod.yaml</code>o</a>
-file.</p>
+<code>compose-prod.yaml</code></a> file.</p>
 
 <p>You can see my
 <a href=https://github.com/cmgoold/cmgoold.com/blob/main/nginx/nginx.conf>

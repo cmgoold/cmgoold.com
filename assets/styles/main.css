@@ -30,7 +30,7 @@
         --inline-code-background: #3b302f;
         --inline-code-border: var(--dark-gray-color);
         --site-name-color: var(--font-color);
-        --tag-color: var(--font-color);
+        --tag-color: var(--dark-gray-color);
     }
 }
 
@@ -83,6 +83,12 @@ body {
     color: var(--site-name-color);
     font-weight: bold;
     font-size: 1.5rem;
+}
+
+hr {
+    border: solid 1px;
+    width: 100%;
+    margin-left: 0px;
 }
 
 footer {
@@ -151,22 +157,22 @@ ul.posts li span {
     flex: 0 0 120px;
 }
 
-ul.posts li span.tags {
+span.tags {
     flex: 0 0 120px;
-    margin-left: 1%;
+    margin-left: 0%;
     color: var(--tag-color);
     font-size: var(--small-font-size);
     line-height: 2.1;
 }
 
+span.tags a {
+    color: var(--tag-color);
+    padding: 0;
+}
+
 ul.posts li span.post-list {
     flex: 0 0 70%;
     white-space: normal;
-}
-
-ul.posts li span.tags a {
-    color: var(--tag-color);
-    padding: 0;
 }
 
 .metadata {

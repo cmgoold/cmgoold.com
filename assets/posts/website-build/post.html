@@ -68,13 +68,13 @@ produce this web page:
     <li>The virtual server's IP address points to
         my domain name <code>cmgoold.com</code>, 
     meaning that I can use
-    <code>http://cmgoold.com:<port></code> to access my website
-    rather than <code>http://<long-ip-address>:<port></code>.</li>
+    <code>http://cmgoold.com:&ltport></code> to access my website
+    rather than <code>http://&ltlong-ip-address>:&ltport></code>.</li>
     <br>
     <li>Finally, I use 
         <a href="https://nginx.org/en/">nginx</a>
      as a reverse proxy to route
-     <code>http://cmgoold.com:<port></code> to both 
+     <code>http://cmgoold.com:&ltport></code> to both 
      <code>http://cmgoold.com</code>
      and it's safer default variant <code>https://cmgoold.com</code>.
      Of course, you can just type <code>cmgoold.com</code> 

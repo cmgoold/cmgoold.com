@@ -30,7 +30,7 @@
         --inline-code-background: #3b302f;
         --inline-code-border: var(--dark-gray-color);
         --site-name-color: var(--font-color);
-        --tag-color: var(--font-color);
+        --tag-color: var(--dark-gray-color);
     }
 }
 

@@ -12,6 +12,14 @@
     <h1>{{ metadata.title }}</h1>
     <div class=metadata> 
         <ul>
+            <li>
+                <span class=tags>
+                    tags: 
+                    {% for tag in metadata.tags %}
+                        [<a href=/posts?tag={{ tag }}>{{ tag }}</a>]
+                    {% endfor %}
+                </span>
+            </li>
             <li>Posted: {{ metadata.date }}</li>
             {% if metadata.edited_date != metadata.date %}
                 <li>Edited: {{ metadata.edited_date }}</li>

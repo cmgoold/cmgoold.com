@@ -200,3 +200,27 @@ blockquote {
     background: var(--blockquote-color);
     border-left: 5px solid;
     padding: 1%;
+}
+
+img {
+    max-width: 100%;
+    width: 600px;
+    height: auto;
+}
+
+.dag {
+    max-width: 100%;
+    width: 600px;
+    height: auto;
+    stroke: var(--font-color);
+    fill: var(--font-color);
+}
+
+figcaption {
+    color: var(--dark-gray-color);
+    font-family: var(--font-monospace);
+    font-style: italic;
+    font-size: var(--small-font-size);
+    padding-left: 10%;
+    padding-right: 10%;
+}

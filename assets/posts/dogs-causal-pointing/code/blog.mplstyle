@@ -1,0 +1,5 @@
+axes.titlesize:  24
+axes.labelsize:  20
+axes.grid: False
+xtick.labelsize: 16
+ytick.labelsize: 16

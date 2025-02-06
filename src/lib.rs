@@ -26,11 +26,12 @@ pub fn serve() -> Result<Server, std::io::Error> {
     let server = HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(TEMPLATES.clone()))
-            .service(Files::new("/styles", "assets/styles/").use_last_modified(true))
+            .service(Files::new("/styles", "./assets/styles/").use_last_modified(true))
             .route("/status", web::get().to(HttpResponse::Ok))
             .service(handlers::index)
             .service(handlers::posts)
             .service(handlers::post)
+            .service(handlers::serve_static)
     })
     .bind(("0.0.0.0", 8080))?
     .run();

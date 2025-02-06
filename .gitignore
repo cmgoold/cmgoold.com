@@ -2,3 +2,5 @@
 **/.*.swp
 _assets/styles/tailwind/node_modules
 posts.txt
+
+.venv

@@ -1,4 +1,5 @@
-use actix_web::{get, web, HttpResponse, HttpRequest, Responder};
+use actix_web::{get, web, Error, HttpResponse, HttpRequest, Responder};
+use actix_web::http::header::{ContentDisposition, DispositionType};
 use ignore::WalkBuilder;
 use std::time::SystemTime;
 use chrono::{DateTime, Utc};
@@ -60,6 +61,19 @@ pub async fn posts(templates: web::Data<tera::Tera>, request: HttpRequest) -> im
                 .body("<p>Something went wrong!</p>")
         }
     }
+}
+
+#[get("/posts/{slug}/static/{file_path}")]
+pub async fn serve_static(path: web::Path<(String, String)>) ->  Result<actix_files::NamedFile, Error> {
+    let (slug, file_path) = path.into_inner();
+    let file = actix_files::NamedFile::open(format!("./assets/posts/{}/static/{}", slug, file_path))?;
+    Ok(file
+        .use_last_modified(true)
+        .set_content_disposition(ContentDisposition {
+            disposition: DispositionType::Attachment,
+            parameters: vec![],
+        })
+    )
 }
 
 #[get("/posts/{slug}")]

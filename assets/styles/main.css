@@ -204,12 +204,10 @@ blockquote {
 
 img {
     max-width: 100%;
-    width: 600px;
     height: auto;
 }
 
 .dag {
-    max-width: 100%;
     width: 600px;
     height: auto;
     stroke: var(--font-color);

@@ -179,7 +179,7 @@ pub async fn send(templates: web::Data<tera::Tera>, form: web::Form<ContactForm>
         .body(String::from(&form.message))
         .unwrap();
 
-    let mailer = SmtpTransport::relay("smtp.gmail.com")
+    let mailer = SmtpTransport::starttls_relay("smtp.gmail.com")
         .unwrap()
         .credentials(creds)
         .build();

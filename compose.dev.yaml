@@ -1,5 +1,7 @@
 services:
   web:
+    volumes:
+      - ./.env:/cmgoold/.env
     build: .
     ports:
       - "8080:8080"

@@ -5,9 +5,11 @@ use std::time::SystemTime;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use lettre::{Message, SmtpTransport, Transport};
+use dotenv::dotenv;
 
 use crate::metadata::Metadata;
 use crate::contact::ContactForm;
+
 
 #[derive(Debug, Deserialize)]
 pub struct Tag {
@@ -143,11 +145,15 @@ pub async fn send(templates: web::Data<tera::Tera>, form: web::Form<ContactForm>
     context.insert("name", &form.name);
 
     let name = form.name.to_owned();
-    let email = form.email.to_owned();
-    let from = format!("{name} <{email}>");
-    let to = "cmgoold <cmgoold@protonmail.com>";
+    let from_email = form.email.to_owned();
+    let from = format!("{name} <{from_email}>");
 
-    if email.is_empty() {
+    dotenv().ok();
+    let to = std::env::var("FORWARDING_EMAIL")
+        .ok()
+        .unwrap_or(String::from(""));
+
+    if from_email.is_empty() || !from_email.contains("@") {
         return HttpResponse::InternalServerError()
             .content_type("text/html")
             .body("<p>Error! Did you provide a valid email address?</p>");
@@ -158,10 +164,12 @@ pub async fn send(templates: web::Data<tera::Tera>, form: web::Form<ContactForm>
             .body("<p>Error! Contact messages need to be > 10 characters.</p>");
     }
 
+    let subject = format!("New website contact received from {from}");
+
     let email = Message::builder()
         .from(String::from(from).parse().unwrap())
         .to(to.parse().unwrap())
-        .subject("New website contact received")
+        .subject(subject)
         .body(String::from(&form.message))
         .unwrap();
 

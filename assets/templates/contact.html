@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>cmgoold/contact</title>
+{% endblock head %}
+
+{% block header %}
+    {% include "navigation.html" %}
+{% endblock header %}
+
+{% block content %}
+    {% if submitted %}
+        <p>Thanks, {{ name }}. Your message was sent.</p>
+    {% else %}
+        <div class="send">
+            <form method="post" action="/contact">
+                <label for="username">Name</label>
+                <input type="text" id="username" name="name">
+
+                <label for="useremail">Email</label>
+                <input type="text" id="useremail" name="email">
+
+                <label for="usermessage">Message</label>
+                <textarea id="usermessage" name="message"></textarea>
+
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    {% endif %}
+{% endblock content %}

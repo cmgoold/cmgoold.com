@@ -4,6 +4,7 @@ use tera::Tera;
 
 mod handlers;
 mod metadata;
+mod contact;
 
 #[macro_use]
 extern crate lazy_static;
@@ -32,6 +33,8 @@ pub fn serve() -> Result<Server, std::io::Error> {
             .service(handlers::posts)
             .service(handlers::post)
             .service(handlers::serve_static)
+            .service(handlers::contact)
+            .service(handlers::send)
     })
     .bind(("0.0.0.0", 8080))?
     .run();

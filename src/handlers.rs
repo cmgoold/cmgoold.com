@@ -177,6 +177,7 @@ pub async fn send(templates: web::Data<tera::Tera>, form: web::Form<ContactForm>
     let mailer = SmtpTransport::starttls_relay("mail.protonmail.ch")
         .unwrap()
         .port(25)
+        .timeout(Some(std::time::Duration::from_secs(500)))
         .build();
 
     match mailer.send(&email) {

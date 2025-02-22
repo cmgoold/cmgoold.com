@@ -18,6 +18,8 @@ services:
   site:
     container_name: cmgoold.com
     image: cmgoold
+    volumes:
+      - ../.env:/cmgoold/.env
     ports:
       - 8080:8080
 

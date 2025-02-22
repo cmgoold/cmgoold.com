@@ -1,11 +1,15 @@
-use actix_web::{get, web, Error, HttpResponse, HttpRequest, Responder};
+use actix_web::{get, post, web, Error, HttpResponse, HttpRequest, Responder};
 use actix_web::http::header::{ContentDisposition, DispositionType};
 use ignore::WalkBuilder;
 use std::time::SystemTime;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
+use lettre::{Message, SmtpTransport, Transport};
+use dotenv::dotenv;
 
 use crate::metadata::Metadata;
+use crate::contact::ContactForm;
+
 
 #[derive(Debug, Deserialize)]
 pub struct Tag {
@@ -111,6 +115,81 @@ pub async fn post(templates: web::Data<tera::Tera>, slug: web::Path<String>) -> 
             return HttpResponse::NotFound()
                 .content_type("text/html")
                 .body("<p>Could not find post</p>");
+        }
+    }
+}
+
+#[get("/contact")]
+pub async fn contact(templates: web::Data<tera::Tera>) -> impl Responder {
+    let mut context = tera::Context::new();
+    context.insert("file", "");
+
+    match templates.render("contact.html", &context) {
+        Ok(s) => HttpResponse::Ok().content_type("text/html").body(s),
+        Err(e) => {
+            println!("{:?}", e);
+            HttpResponse::InternalServerError()
+                .content_type("text/html")
+                .body("<p>Something went wrong!</p>")
+        }
+    }
+}
+
+#[post("/contact")]
+pub async fn send(templates: web::Data<tera::Tera>, form: web::Form<ContactForm>) -> impl Responder {
+    let mut context = tera::Context::new();
+    context.insert("file", "");
+
+    let submitted = true;
+    context.insert("submitted", &submitted);
+    context.insert("name", &form.name);
+
+    let name = form.name.to_owned();
+    let from_email = form.email.to_owned();
+    let from = format!("{name} <{from_email}>");
+
+    dotenv().ok();
+    let to = std::env::var("FORWARDING_EMAIL")
+        .ok()
+        .unwrap_or(String::from(""));
+
+    if from_email.is_empty() || !from_email.contains("@") {
+        return HttpResponse::InternalServerError()
+            .content_type("text/html")
+            .body("<p>Error! Did you provide a valid email address?</p>");
+    }
+    if form.message.is_empty() || form.message.chars().count() < 10 {
+        return HttpResponse::InternalServerError()
+            .content_type("text/html")
+            .body("<p>Error! Contact messages need to be > 10 characters.</p>");
+    }
+
+    let subject = format!("New website contact received from {from}");
+
+    let email = Message::builder()
+        .from(String::from(from).parse().unwrap())
+        .to(to.parse().unwrap())
+        .subject(subject)
+        .body(String::from(&form.message))
+        .unwrap();
+
+    let mailer = SmtpTransport::starttls_relay("mail.protonmail.ch")
+        .unwrap()
+        .port(25)
+        .build();
+
+    match mailer.send(&email) {
+        Ok(_) => println!("Email sent succesffully!"),
+        Err(e) => panic!("Could not send email: {e:?}"),
+    };
+
+    match templates.render("contact.html", &context) {
+        Ok(s) => HttpResponse::Ok().content_type("text/html").body(s),
+        Err(e) => {
+            println!("{:?}", e);
+            HttpResponse::InternalServerError()
+                .content_type("text/html")
+                .body("<p>Something went wrong!</p>")
         }
     }
 }

@@ -4,3 +4,6 @@ _assets/styles/tailwind/node_modules
 posts.txt
 
 .venv
+.env
+
+.DS_Store

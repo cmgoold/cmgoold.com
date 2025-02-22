@@ -152,6 +152,7 @@ pub async fn send(templates: web::Data<tera::Tera>, form: web::Form<ContactForm>
     let to = std::env::var("FORWARDING_EMAIL")
         .ok()
         .unwrap_or(String::from(""));
+    println!("To address set to {}", to);
 
     if from_email.is_empty() || !from_email.contains("@") {
         return HttpResponse::InternalServerError()

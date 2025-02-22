@@ -5,6 +5,7 @@ use std::time::SystemTime;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use lettre::{Message, SmtpTransport, Transport};
+use lettre::transport::smtp::authentication::Credentials;
 use dotenv::dotenv;
 
 use crate::metadata::Metadata;
@@ -154,6 +155,9 @@ pub async fn send(templates: web::Data<tera::Tera>, form: web::Form<ContactForm>
         .unwrap_or(String::from(""));
     println!("To address set to {}", to);
 
+    let username = std::env::var("USERNAME").ok().unwrap_or(String::from(""));
+    let password = std::env::var("PASSWORD").ok().unwrap_or(String::from(""));
+
     if from_email.is_empty() || !from_email.contains("@") {
         return HttpResponse::InternalServerError()
             .content_type("text/html")
@@ -166,6 +170,7 @@ pub async fn send(templates: web::Data<tera::Tera>, form: web::Form<ContactForm>
     }
 
     let subject = format!("New website contact received from {from}");
+    let creds = Credentials::new(username.to_owned(), password.to_owned());
 
     let email = Message::builder()
         .from(String::from(from).parse().unwrap())
@@ -174,10 +179,9 @@ pub async fn send(templates: web::Data<tera::Tera>, form: web::Form<ContactForm>
         .body(String::from(&form.message))
         .unwrap();
 
-    let mailer = SmtpTransport::starttls_relay("mail.protonmail.ch")
+    let mailer = SmtpTransport::relay("smtp.gmail.com")
         .unwrap()
-        .port(25)
-        .timeout(Some(std::time::Duration::from_secs(500)))
+        .credentials(creds)
         .build();
 
     match mailer.send(&email) {

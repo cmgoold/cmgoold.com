@@ -236,7 +236,6 @@ textarea {
 }
 
 input[type=submit] {
-    font-family: var(--font-monospace);
     font-size: 1.05rem;
 }
 

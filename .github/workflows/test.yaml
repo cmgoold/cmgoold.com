@@ -8,6 +8,7 @@ on:
       - src/**
       - assets/**
       - nginx/**
+      - Dockerfile
 
 jobs:
   test_docker_build:

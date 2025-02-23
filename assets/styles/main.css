@@ -189,6 +189,9 @@ ul.posts li span.post-list {
 }
 
 .datetime {
+    font-family: var(--font-monospace);
+    font-size: 1rem;
+    line-height: 1.9;
 }
 
 .filter {

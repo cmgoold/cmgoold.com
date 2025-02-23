@@ -54,7 +54,12 @@ pub async fn posts(templates: web::Data<tera::Tera>, request: HttpRequest) -> im
         }
     };
 
+    let datetimes: Vec<_> = metadata.iter()
+        .map(|m| m.string_date_to_datetime("date"))
+        .collect();
+
     context.insert("metadata", &metadata);
+    context.insert("datetimes", &datetimes);
     context.insert("tag", &tag);
 
     match templates.render("posts.html", &context) {
@@ -107,6 +112,12 @@ pub async fn post(templates: web::Data<tera::Tera>, slug: web::Path<String>) -> 
     };
 
     context.insert("post", &post);
+    let posted = &metadata.string_date_to_datetime("date");
+    let edited = &metadata.string_date_to_datetime("edited");
+    let future_edits = edited > posted;
+    context.insert("posted", &posted);
+    context.insert("edited", &edited);
+    context.insert("future_edits", &future_edits);
     context.insert("metadata", &metadata);
 
     match templates.render("post.html", &context) {
@@ -253,7 +264,7 @@ fn pull_metadatas(tag: Option<&String>) -> Result<Vec<Metadata>, std::io::Error>
         }
     }
 
-    metadatas.sort_by(|a, b| b.string_date_to_datetime().cmp(&a.string_date_to_datetime()));
+    metadatas.sort_by(|a, b| b.string_date_to_datetime("date").cmp(&a.string_date_to_datetime("date")));
 
     Ok(metadatas)
 }

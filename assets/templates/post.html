@@ -20,9 +20,9 @@
                     {% endfor %}
                 </span>
             </li>
-            <li>Posted: {{ metadata.date }}</li>
-            {% if metadata.edited_date != metadata.date %}
-                <li>Edited: {{ metadata.edited_date }}</li>
+            <li>Posted: {{ posted | date(format="%b %d, %Y") }}</li>
+            {% if future_edits %}
+                <li>Edited: {{ edited | date(format="%b %d, %Y") }}</li>
             {% endif %}
             {% if metadata.edit_notes %}
                 <li>Edits: {{ metadata.edit_notes }}</li>

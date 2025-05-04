@@ -192,7 +192,7 @@ For any events A and B, we have:
 </p>
 
 <pre><code>
-p(A, B) = p(A) P(A | B) == P(B) P(B | A)
+p(A, B) = P(A | B) P(B) == P(B | A) P(A)
 </code></pre>
 
 <p>The 'bar' syntax in p(A | B) is just notation
@@ -201,7 +201,7 @@ these probabilities are simply known as <em>conditional</em> probabilities.
 Sometimes it's more intuitive to think about conditional
 probabilities than joint probabilities. If we divide
 by the marginal probability on both sides of the above
-equation, we get p(A | B) = p(A, B) / P(A).
+equation, we get p(A | B) = p(A, B) / P(B).
 In words, we can say that the conditional probability
 is the joint probability corrected for the probability
 of one of the events. The division focuses our attention

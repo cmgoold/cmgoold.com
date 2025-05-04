@@ -1,0 +1,742 @@
+<p>John Ioannidis' 2005 article
+<em><a href=https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020124>Why most published research findings are false</a></em>
+is a famous article in the history of 'meta-science'.
+To some, it is one of the starting places of the
+reproducibility movement, although many authors
+raised similar concerns decades previously.
+</p>
+
+<p>The article focuses on a theoretical model
+of the publication process and, in particular,
+the detection of true and false research findings.
+Many people find this article and its sentiments
+interesting but it's use of a mathematical model
+can make its arguments less accessible to a wider
+readership. When I was in academia, this article
+was discussed in local reproducibility network
+meetings a number of times, and people frequently
+expressed frustration at not having the time to understand
+the maths behind the paper in more detail.
+</p>
+
+<p>In reality, the mathematical model is simple,
+which is partly why the paper has received criticism.
+The model is also Bayesian, which is why I'm interested in it.
+In this post, I'll repose its main theoretical
+argument using the language of probability theory
+rather than medical diagnostic testing and hypothesis
+testing. I hope this will provide a gentler insight
+into the paper's findings from first principles.
+I'm not going to critique the article or delve
+into the controversies surrounding Ioannidis in recent
+years. 
+</p>
+
+<h2>Table 1</h2>
+<p>If you understand Table 1 of the paper, you're most of the
+way there to understanding the mathematical model.
+Table 1 is a typical <em>contingency</em> table,
+detailing two discrete events. Along the rows, we can either
+accept or reject some hypothesis based on running an experiment.
+Along the columns, the hypothesis is either actually
+true or false. 
+Each individual cell
+provides the total number of studies aligning with each of
+the four outcomes.
+Of course, in real experiments, you don't know whether a hypothesis
+was <em>actually</em> true or false, but this is the power
+of modelling: we make the rules and simulate the process
+forwards.</p>
+
+<p>
+Below, we'll consider only the probability of each outcome
+for ease, but it's often easier to see what's going on with probabilities
+by starting with frequencies, so here's a simplified
+Table 1 detailing purely the counts of the different
+possibilities. Imagine a large number of studies have
+been run, e.g. 100, with clear accept and reject hypothesis
+decision criteria,
+and we can check retrospectively
+whether the decisions were indeed correct.
+</p>
+
+<table>
+    <caption>Table 1, simplified counts.</caption>
+    <tr>
+        <th></th>
+        <th>True</th>
+        <th>False</th>
+        <th>Total</th>
+    </tr>
+    <tr>
+        <th>Accept</th>
+        <th># true accept</th>
+        <th># false accept</th>
+        <th>$\sum$ accept</th>
+    </tr>
+    <tr>
+        <th>Reject</th>
+        <th># false reject</th>
+        <th># true reject</th>
+        <th>$\sum$ reject</th>
+    </tr>
+    <tr>
+        <th>Total</th>
+        <th>$\sum$ true</th>
+        <th>$\sum$ false</th>
+        <th>$\sum\sum$</th>
+    </tr>
+</table>
+
+<p>In the first row, we can either have
+true or false accept decisions, and
+in the second row we have either
+true or false reject decisions.
+The former are generally known as 
+true and false positives, and the latter
+as true and false negatives.
+The <code>Total</code> row and column
+provide the sum of the respective row and
+column, and the bottom right cell denotes
+the sum of either the total column or
+the total row.
+</p>
+
+<p>To turn this table into a set of probabilities,
+all we have to do is divide each cell by the total
+number of studies.</p>
+
+<table>
+    <caption>Table 1, simplified probabilities.</caption>
+    <tr>
+        <th></th>
+        <th>True</th>
+        <th>False</th>
+        <th>Marginal</th>
+    </tr>
+    <tr>
+        <th>Accept</th>
+        <th>p(a, t)</th>
+        <th>p(a, f)</th>
+        <th>p(a)</th>
+    </tr>
+    <tr>
+        <th>Reject</th>
+        <th>p(r, t)</th>
+        <th>p(r, f)</th>
+        <th>p(r)</th>
+    </tr>
+    <tr>
+        <th>Marginal</th>
+        <th>p(t)</th>
+        <th>p(f)</th>
+        <th>1</th>
+    </tr>
+</table>
+
+<p>The p() notation here just means "probability of",
+and I have initialised the accept/reject and true/false
+decisions as lower-case. Note that the bottom right
+cell is now known to be 1, because it is the total number of studies
+divided by itself, and the <code>Total</code> row/column 
+has been renamed to <code>Marginal</code> because the
+sum of the individual cell probabilities present the
+<em>marginal</em> probabilities of the different outcomes.
+Think of marginal probabilities as the probability of
+an outcome regardless of the other variable. 
+p(a) is the probability of accepting a hypothesis regardless of whether
+it's true or not, p(f) is the probability of a hypothesis being
+false regardless of whether the study hypothesis was accepted
+or not, and so on.
+</p>
+
+<p>Marginal probabilities represent an <code>OR</code> logical
+relationship. The probability of one event occurring regardless
+of any other events (assuming independence) is just a sum of
+all the possible way that event could occur. The probability
+of wind, regardless of whether it's cloudy or sunny, is
+the probability of wind if it's cloudy plus the probability
+of wind if it's sunny. More on this below.</p>
+
+<p>If marginal probabilities indicate <code>OR</code> relationships,
+each individual cell of the table indicate <code>AND</code> relationships.
+Specifically, they are the <em>joint</em> probabilities of two
+different events: accept & true, accept & false,
+reject & true, and reject & false.
+It's the probability of wind <em>and</em>
+sun on the same day, or the probability of
+wind <em>and</em> cloud.
+</p>
+
+<p>The marginal probabilities are composed of individual
+joint probabilities. The probability of wind
+is the sum of p(wind, cloud) and p(wind, sun).
+Similarly, the probability of accepting a hypothesis
+is the sum of p(a, t) and p(a, f), as we can see
+from the table above. So, what's the joint probability
+composed of?</p>
+
+<p>If you think logically, the joint probability is composed of two
+elements. If it's sunny and windy on the same day,
+that could either occur if it's sunny first,
+then it's windy, or if it's windy first, then it became
+sunny. A joint probability can be factored into
+the probability of one event, alone, multiplied by the probability of the
+other event given we know the first event has also occurred.
+The probability of winning a marathon and running under
+3 hours is composed of the probability
+of winning a marathon, regardless of the time,
+multiplied by the probability of running under 3 hours
+given winning a marathon.
+For any events A and B, we have:
+</p>
+
+<pre><code>
+p(A, B) = p(A) P(A | B) == P(B) P(B | A)
+</code></pre>
+
+<p>The 'bar' syntax in p(A | B) is just notation
+for 'given' or 'conditional on', and therefore
+these probabilities are simply known as <em>conditional</em> probabilities.
+Sometimes it's more intuitive to think about conditional
+probabilities than joint probabilities. If we divide
+by the marginal probability on both sides of the above
+equation, we get p(A | B) = p(A, B) / P(A).
+In words, we can say that the conditional probability
+is the joint probability corrected for the probability
+of one of the events. The division focuses our attention
+on all the possible outcomes to only a subset of possible outcomes,
+since we already know that one has occurred.
+The probability of winning a marathon given someone runs under
+3 hours automatically limits our attention to all marathon
+runners who have run under 3 hours. The probability of wind given
+its raining limits our attention those days it's already raining.
+If you had historical data on two events in a big Excel sheet,
+this would be like filtering one column to restrict the attention
+on a particular outcome.
+</p>
+
+<p>The definitions of joint, marginal and conditional probabilities are
+foundational in probability theory, and hold an important concept
+for understanding Ioannidis' paper. Because of their dependent
+relationship &mdash; the joint factors into the conditional
+times the marginal, the conditional is the joint divided by the marginal
+&mdash; even if one of those probabilities
+is particularly high or low, 
+the value of the other could significantly change the outcome.
+Winning a marathon and running sub-3 hours will probably
+be rare even if running sub-3 hours is a fast but frequent
+occurrence for some runners because winning a race is hard.
+Egypt is one of the driest places on earth, so the chance of
+if it raining and being windy is still very low even if rain
+usually follows wind, even in Egypt (I don't know, but you get
+the point).
+</p>
+
+<p>This is known as the <em>base rate fallacy</em>,
+and is also the reason that complementary conditional probabilities 
+are not equal. If someone told you they'd won a local marathon,
+you'd be pretty sure they ran under 3 hours. But if someone told
+you they'd just run under 3 hours for a marathon, you'd probably
+be less certain that they'd won, because plenty of others likely
+ran under 3 hours too. These are two conditional probabilities,
+<code>p(sub-3 | won)</code> and <code>p(won | sub-3)</code>,
+and their definitions are not equal as long as the marginal
+probabilities of winning a marathon and running sub-3 hours
+are not equal:
+</p>
+
+<pre><code class=bash>
+p(sub-3 | won) = p(sub-3, won) / p(won)
+p(won | sub-3) = p(sub-3, won) / p(sub-3)
+
+p(sub-3, won) / p(won) > p(sub-3, won) / p(sub-3)
+1 > p(won) / p(sub-3)
+p(sub-3) > p(won)
+</code></pre>
+
+<p>Both involve the same joint probability, but because
+the probability of winning a marathon is quite a bit lower
+than running sub-3 hours, we'd expect the first conditional
+probability to be higher than the second.
+What's important to understand here is that the marginal
+probability, also known as the base rate or
+prior probability, matters. 
+</p>
+
+<p>Let's get back to Table 1 of the paper.
+With these definitions in hand, we can expand
+the joint probabilities of the
+simplified table into their conditional and marginal
+probabilities:</p>
+
+<table>
+    <caption>Table 1, expanded joint probabilities.</caption>
+    <tr>
+        <th></th>
+        <th>True</th>
+        <th>False</th>
+        <th>Marginal</th>
+    </tr>
+    <tr>
+        <th>Accept</th>
+        <th>p(a | t) p(t)</th>
+        <th>p(a | f) p(f)</th>
+        <th>p(a)</th>
+    </tr>
+    <tr>
+        <th>Reject</th>
+        <th>p(r | t) p(t)</th>
+        <th>p(r | f) p(f)</th>
+        <th>p(r)</th>
+    </tr>
+    <tr>
+        <th>Marginal</th>
+        <th>p(t)</th>
+        <th>p(f)</th>
+        <th>1</th>
+    </tr>
+</table>
+
+<p>To save space, I haven't expanded the marginal
+probabilities, so just remember that these are simply
+the sum of the rows and/or columns, respectively.
+This summation is known as
+the <em>law of total probability</em>.
+</p>
+
+<p>Table 1 is quite complete, but it doesn't look
+like the actual Table 1 from the paper.
+So let's fill in the relevant terms.</p>
+
+<h3>The pre-study probability</h3>
+Ioannidis doesn't use the term 'marginal' or 'base rate' or 'prior'
+in his paper but calls p(t), the marginal probability of the
+study being true, the
+'pre-study probability' defined using a variable called 'R'.
+R is the 'odds ratio' of true to false hypotheses, 
+the ratio of p(t) and p(f) in our table above. Rather than
+talk about probabilities, odds ratios are positive variables
+but do not have to be between 0 and 1. This is mainly just
+historical preference, particularly in the field
+of medical diagnostic testing.
+Here's what we're told off-the-bat in the paper:
+</p>
+
+<pre><code class=text>
+pre-study probability = R / (R + 1)
+
+where R = # true relationships / # false relationships
+or    R = p(t) / p(f)
+</code></pre>
+
+<p>This means that p(t) = R / (R + 1), which can be
+shown with a bit of long-winded algebra.
+</p>
+
+<pre><code class=text>
+p(t) = p(t) / [p(t) + p(f)] # denominator sums to 1
+     = p(t) / p(f) * 1 / [p(t) / p(f) + 1]
+     = R * 1/(R + 1)
+     = R / (R + 1)
+</code></pre>
+
+<p>The other marginal probability, p(f), is defined as:</p>
+
+<pre><code class=text>
+p(f) = 1 - p(true)
+     = 1 - R/(R + 1)
+     = (R + 1) / (R + 1) - R/(R + 1) 
+     = [(R + 1) - R] / (R + 1)
+     = 1 / (R + 1)
+</code></pre>
+
+<p>p(t) and p(f) sum to 1, as do R / (R + 1) and
+1 / (R + 1).</p>
+
+<h3>Type 1 and Type 2 errors</h3>
+Ioannidis also doesn't use the term 'conditional'
+probability in his paper, but instead uses the
+more specific terms of Type 1 and Type 2 error rates,
+which come from the domain of hypothesis testing.
+A Type 1 error occurs when we accept a hypothesis
+that is in fact false, and a Type 2 error occurs when
+we reject a true hypothesis.
+</p>
+
+<pre><code class=text>
+Type 1 error = p(a | f) = &alpha;
+Type 2 error = p(r | t) = &beta;
+</code></pre>
+
+<p>These two errors are often associated with
+the Greek letters &alpha; and &beta;. Typical
+values assumed and used for experiment planning in
+scientific research are &alpha; = 0.05
+and &beta; = 0.2.
+</p>
+
+<p>We can nearly fill out our table of probabilities with the terminology
+and symbols used by Ioannidis, but we still need to obtain
+p(a | t) and p(r | f). If we look at the definition of marginal
+probabilities, we can see that conditioning on a variable makes
+their joint probabilities sum to 1. For instance, for p(f),
+the marginal probability of the hypothesis being false:<p>
+
+<pre><code class=text>
+p(f) = p(a, f) + p(r, f)
+
+# divide (condition on) by p(f)
+1 = [ p(a, f) + p(r, f) ] / p(f)
+  = p(a, f) / p(f) + p(r, f) / p(f)
+  = p(a | f) + p(r | f)
+</code></pre>
+
+<p>So, for the same conditioning variable and two outcomes, we
+can say that the opposing conditional probability
+is the complement of the first. As a result, we can define
+the remaining conditional probabilities directly in terms
+of &alpha; and &beta;.</p>
+
+<pre><code class=text>
+p(a | t) = 1 - p(r | t)
+         = 1 - Type 2 error
+         = 1 - &beta;
+         = sensitivity
+
+p(r | f) = 1 - p(a | f)
+         = 1 - Type 1 error
+         = 1 - &alpha;
+         = specificity
+</code></pre>
+
+<p>These two conditional probabilities also have their own
+special names in the diagnostic testing literature:
+p(a | t) is the <em>sensitivity</em>, the probability
+of accepting a hypothesis if it's in fact true,
+and p(r | f) is the <em>specificity</em>, the probability
+of rejecting a hypothesis if it is in fact false.</p>
+
+<p>Sensitivity is even more widely known as statistical
+power, and research designs frequently aim for power
+of at least 80%.</p>
+
+<h3>Table 1, defined</h3>
+
+<p>We can finally write out Table 1 of the paper using the definitions
+above to substitute into our table of probabilities. Note,
+we won't include the $c$ variable, the number of studies,
+because our table is defined purely in terms of probabilities.</p>
+
+<table>
+    <caption>Table 1, actual terms.</caption>
+    <tr>
+        <th></th>
+        <th>True</th>
+        <th>False</th>
+        <th>Marginal</th>
+    </tr>
+    <tr>
+        <th>Accept</th>
+        <th>(1 - &beta;) R / (R + 1)</th>
+        <th>&alpha; / (R + 1)</th>
+        <th>(R  + &alpha; - R &beta;) / (R + 1)</th>
+    </tr>
+    <tr>
+        <th>Reject</th>
+        <th>&beta; R / (R + 1)</th>
+        <th>(1 - &alpha;) / (R + 1)</th>
+        <th>(&beta; R - &alpha; + 1) / (R + 1)</th>
+    </tr>
+    <tr>
+        <th>Marginal</th>
+        <th>R / (R + 1)</th>
+        <th>1 / (R + 1)</th>
+        <th>1</th>
+    </tr>
+</table>
+
+<p>Clear as mud? Whilst this model is simple, in the sense that it's
+just manipulating a few probabilities, the way the paper quickly jumps
+into the jargon of diagnostic testing and mathematical terms can make
+it hard to read. Hopefully the slow exposition above has helped someone
+make better sense about how the terms are derived.
+</p>
+
+<h2>Posterior probability of a true result (PPV)</h2>
+
+<p>A key quantity of interest from this paper is the probability
+that a hypothesis is true given that it's been accepted by an
+experiment, which is the conditional probability p(t | a).
+We don't have this probability in our table above you'll notice,
+and we know that p(t | a) $\neq$ p(a | t) because the marginal
+probability of p(t) could be very different to p(a).
+</p>
+
+<p>We can use the fact that 
+joint probabilities are interchangeable
+to our advantage here by setting
+them equal to each other and solving for the conditional
+probability p(t | a).</p>
+
+<pre><code class=text>
+p(a, t) = p(t, a)
+p(a | t) p(t) = p(t | a) p(a)
+
+p(t | a) = p(a | t) p(t) / p(a)
+</code></pre>
+
+<p>We've just derived a very important rule: Bayes' theorem!
+Bayes' theorem is simply a way of relating conditional probabilities.
+We can now use the terms in the table to define this conditional
+probability:
+</p>
+
+<pre><code class=text>
+p(t | a) = (1 - &beta;) R / (R + 1) [(R + 1) / (R + &alpha; - R &beta;)]
+         = (1 - &beta;) R / (R + &alpha; - R &beta;)
+</code></pre>
+
+<p>This quantity is the 'posterior probability of a true result' or PPV,
+a common diagnostic in medical testing literature. Ideally, accepting
+a hypothesis would mean that the hypothesis is in fact true, but that
+is highly dependent on the base rate or p(t).
+As we're dealing with probabilities of discrete outcomes, 
+it's helpful to talk about
+what value p(t | a) would need to obtain to be considered 'true'.
+One option is to say that p(t | a) should be greater than 50%,
+which results in the following inequality.
+</p>
+
+<pre><code class=text>
+p(t | a) > 0.5
+(1 - &beta;) R / [R + &alpha; - R &beta;] > 0.5
+(1 - &beta;) R > 0.5 * (R + &alpha; - R &beta;)
+2 (1 - &beta;) R > R + &alpha; - R &beta;
+2 (1 - &beta;) R > R (1 - &beta;) + &alpha;
+2 (1 - &beta;) R - R (1 - &beta;) > &alpha;
+(1 - &beta;) R > &alpha;
+</code></pre>
+
+<p>You can think of this as the 'odds a hypothesis is true'. Ioannidis writes:</p>
+
+<blockquote>
+    Since the vast majority of invesigators
+    depend on a &alpha; = 0.05, this
+    means that a research finding is more
+    likely true than false if
+    (1 - &beta;) R > 0.05.
+</blockquote>
+
+<p>The plot below shows this relationship on the left
+and the value of p(t | a) (the PPV) on the right
+for set values of &alpha; = 0.05 and two values of
+&beta; = {0, 0.2}. Setting &beta; to zero means that the
+Type 2 error, p(r | t), is zero, so that the probability
+of being true above simply needs to be greater than the
+Type 1 error rate.
+</p>
+
+<picture>
+    <source srcset="/posts/ioannidis-why-most-research/static/table1-light.png" media="(prefers-color-scheme: light)"/>
+    <source srcset="/posts/ioannidis-why-most-research/static/table1-dark.png" media="(prefers-color-scheme: dark)"/>
+    <img src="/posts/ioannidis-why-most-research/static/table1-dark.png"/>
+    <figcaption>The left panel shows the term that needs to be greater than &alpha; (dashed line at 0.05),
+        and the right panel shows the posterior predictive value, or p(t | a).</figcaption>
+</picture>
+
+<p>This plot matches results presented in Figure 1 of the paper,
+with the point being that, for traditional levels of
+&alpha; and 1 - &beta;, <em>and</em> assuming that the pre-study
+odds or prior probability of a hypothesis being true is probably
+relatively small, then the chances of an accepted hypothesis actually
+being true could only be around 50-80%. This actually isn't too bad,
+but it presents an idealistic view of the publication process.
+In the model above, we might assume that every study
+with an accepted hypothesis got there through merit
+alone, and any false positives or false negatives
+are down to random fluctuations.
+But that ignores intentional bias.
+</p>
+
+<h2>Adding bias</h2>
+<p>The principal analysis in Ioannidis' paper is the addition of
+how bias changes the results.
+Specifically, a new decision process is introduced,
+which is the probability that a hypothesis was rejected
+but then switched to accepted due to bias.
+Ioannidis calls this variable 'u'.
+</p>
+
+<p>u is another conditional probability:
+the probability a hypothesis is accepted
+given it was first rejected and its findings manipulated.
+This could get messy notationally,
+so I'm going to keep it simple and introduce the
+term 's' to indicate switching an initial decision
+due to bias, and 'h' for holding true to an initial
+decision. Then:
+</p>
+
+<pre><code class=text>
+# switch after reject (biased)
+p(s | r) = u
+# hold after reject (unbiased)
+p(h | r) = 1 - u
+# switch after accept (never)
+p(s | a) = 0
+# hold after accept (always)
+p(h | a) = 1
+</code></pre>
+
+<p>Note that we assume people never
+switch from accept to reject, and always
+hold onto accept decisions.
+It's also assumed that these conditional
+probabilities are independent of the
+whether the hypothesis is actually true
+or false.
+</p>
+
+<p>How does this change our table? Although we now
+have three events to play with, we can keep the
+same 2x2 contingency table as before and just
+update the terms to include the different possibilities. 
+This is a simplified Table 2 from the paper.
+</p>
+
+<table>
+    <caption>Table 2, three events.</caption>
+    <tr>
+        <th></th>
+        <th>True</th>
+        <th>False</th>
+        <th>Marginal</th>
+    </tr>
+    <tr>
+        <th>Accept</th>
+        <th>p(h, a, t) + p(s, r, t)</th>
+        <th>p(h, a, f) + p(s, r, f)</th>
+        <th>p(a)</th>
+    </tr>
+    <tr>
+        <th>Reject</th>
+        <th>p(h, r, t)</th>
+        <th>p(h, r, f)</th>
+        <th>p(r)</th>
+    </tr>
+    <tr>
+        <th>Marginal</th>
+        <th>p(t)</th>
+        <th>p(f)</th>
+        <th>1</th>
+    </tr>
+</table>
+
+<p>Each cell is still the joint probability
+of accepting/rejecting and true/false,
+but we're now <em>marginalising</em> over the
+different possible ways that joint probability
+could arise. Confusingly, it's a joint probability which
+is also marginal. In reality, all probabilities
+are marginalising over something because
+probabilities are always conditioning on other things.
+We might talk a lot about 'independence' in statistics,
+but that's an ideal rather than a certainty.
+The probability of rain, p(rain), is dependent on many
+of factors,
+p(rain) = p(rain, factor1) + p(rain, factor2) + ..., etc..
+</p>
+
+<p>
+Let's fill out these probabilities.
+We can break each cell out further into it's
+component probabilities. I'll just do this
+for the first column in detail:</p>
+
+<pre><code class=text>
+p(a, t) = p(h, a, t) + p(s, r, t)
+        = p(h | a) p(a | t) p(t) + p(s | r) p(r | t) p(t)
+        = 1 (1 - &beta;) R / (R + 1) + u &beta; R / (R + 1)
+        = [(1 - &beta;) R + u &beta; R] / (R + 1)
+
+p(r, t) = p(h, r, t) # p(s, a, t) = 0
+        = p(h | r) p(r | t) p(t)
+        = (1 - u) &beta; R / (R + 1)
+</code></pre>
+
+<p>
+Finally, here's Table 2 of the paper re-created. I'm
+not showing the marginal probabilities of accept and
+reject, because they'd take up too much space, but you
+can see the paper for their expressions.</p>
+
+<table>
+    <caption>Table 2, re-created.</caption>
+    <tr>
+        <th></th>
+        <th>True</th>
+        <th>False</th>
+    </tr>
+    <tr>
+        <th>Accept</th>
+        <th>[(1 - &beta;)R + u&beta;R] / (R + 1)</th>
+        <th>[&alpha; + u(1 - &alpha;)] / (R + 1)</th>
+    </tr>
+    <tr>
+        <th>Reject</th>
+        <th>(1 - u)&beta; R / (R + 1)</th>
+        <th>(1 - u)(1 - &alpha;) / (R + 1)</th>
+    </tr>
+    <tr>
+        <th>Marginal</th>
+        <th>R / (R + 1)</th>
+        <th>1 / (R + 1)</th>
+    </tr>
+</table>
+
+<p>How do we work out the PPV or p(t | a)
+in this case? We can once again just use
+the rules of probability.</p>
+
+<pre><code class=text>
+p(a, t) = [(1 - &beta;)R + u&beta;R] / (R + 1)
+
+p(a) = [(1 - &beta;)R + u&beta;R + &alpha; + u(1 - &alpha;)] / (R + 1)
+
+p(t | a) = p(a, t) / p(a)
+         = [(1 - &beta;)R + u&beta;R] / [(1 - &beta;)R + u&beta;R + &alpha; + u(1 - &alpha;)] 
+</code></pre>
+
+<p>The probability that the PPV is at least 50% is also this gnarly expression:</p>
+
+<pre><code class=text>
+p(t | a) > 0.5
+[(1 - &beta;)R + u&beta;R] / [(1 - &beta;)R + u&beta;R + &alpha; + u(1 - &alpha;)] > 0.5
+2 [(1 - &beta;)R + u&beta;R] > (1 - &beta;)R + u&beta;R + &alpha; + u(1 - &alpha;)
+(1 - &beta;)R + u&beta;R > &alpha;(1 - u) + u
+[R((1 - &beta;) + u&beta;) - u] / (1 - u) > &alpha;
+</code></pre>
+
+<p>Here's what these relationships look like plotted against the pre-study odds, R,
+for no bias and a bias of 20%.</p>
+
+<picture>
+    <source srcset="/posts/ioannidis-why-most-research/static/table2-light.png" media="(prefers-color-scheme: light)"/>
+    <source srcset="/posts/ioannidis-why-most-research/static/table2-dark.png" media="(prefers-color-scheme: dark)"/>
+    <img src="/posts/ioannidis-why-most-research/static/table2-dark.png"/>
+    <figcaption>The left panel shows the term that needs to be greater than &alpha; (dashed line at 0.05),
+        and the right panel shows the posterior predictive value, or p(t | a).</figcaption>
+</picture>
+
+<p>Bias hurts the PPV. The condition on the left shows that we need a pre-study odds greater than
+0.3 (1 true to three false hypotheses) to get above the &alpha; = 0.05 threshold with a bias of 20%,
+which aligns with the right plot. You can use the equations to re-create the results in Ioannidis'
+fourth table of different scenarios, where the chances of getting a PPV > 50% are actually quite difficult.
+Thus, the probability that a hypothesis is true is < 50% in many cases.</p>
+
+<p>I'll leave it to interested readers to go into further details of Ioannidis' paper and decide
+on whether its results merit its title. It always surprises me that such a simple
+exposition of basic probability theory, in what is just a re-hashing
+of the nearly three-centuries old Bayes' rule, can result in as much
+notoriety as this paper has received.</p>

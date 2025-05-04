@@ -247,3 +247,27 @@ input[type=submit] {
     font-family: var(--font-monospace);
     font-size: var(--small-font-size);
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 0;
+    border-style: hidden;
+    font-family: var(--font-monospace);
+    font-size: 1rem;
+}
+
+th, td, tr {
+    border: 1px dashed var(--font-color);
+    text-align: center;
+    font-weight: normal;
+}
+
+caption {
+    display: table-caption;
+    caption-side: bottom;
+    text-align: left;
+    color: var(--dark-gray-color);
+    font-style: italic;
+    padding: 1%;
+}

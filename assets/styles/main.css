@@ -56,7 +56,7 @@ body {
 
 @media (min-width: 768px) {
     :root {
-        --right-margin: 40%;
+        --right-margin: 45%;
     }
     body {
         margin-right: var(--right-margin);
@@ -68,7 +68,7 @@ body {
 
 @media (min-width: 2000px) {
     :root {
-        --right-margin: 55%;
+        --right-margin: 45%;
     }
     body {
         margin-right: var(--right-margin);

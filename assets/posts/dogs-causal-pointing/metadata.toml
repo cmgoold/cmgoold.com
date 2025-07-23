@@ -3,3 +3,4 @@ date = "2025-02-06"
 slug = "dogs-causal-pointing"
 tags = ["dogs", "causality", "science"]
 publish = true
+edit_notes = "Fix LaTeX notation"

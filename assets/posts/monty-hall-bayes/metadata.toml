@@ -1,0 +1,5 @@
+title = "Learning the Monty Hall problem via discrete mixture modelling"
+date = "2025-07-23"
+slug = "monty-hall-bayes"
+tags = ["probability", "Bayesian", "Stan"]
+publish = true

@@ -212,7 +212,7 @@ $$
 P_{i} &\sim \mathrm{Binomial}(n, \pi_{i})\\
 \pi_{i} &= \mathrm{logit}^{-1}(\beta_{sp_{d}} S_{i} + \beta_{sp_{w}} (1 - S_{i}))\\
 W_{i} &\sim \mathrm{Bernoulli}(\theta_{i})\\
-\theta_i &= \mathrm{ilogit}^{-1}(
+\theta_i &= \mathrm{logit}^{-1}(
     \beta_{sw_{d}} S_i + \beta_{sw_{w}} (1 - S_i)
 )\\
 S_i &\sim \mathrm{Bernoulli}(0.5)
@@ -288,7 +288,7 @@ Here's the model mathematically with weakly-informative priors.
 $$
 \begin{align}
     P_i &\sim \mathrm{Binomial}(n, \eta_i)\\
-    \eta_i &= \mathrm{ilogit}^{-1}(
+    \eta_i &= \mathrm{logit}^{-1}(
         \alpha + \beta_S (S_i - 0.5) + \beta_W (W_i - 0.5)
      )\\
      \alpha &\sim \mathrm{Normal}(0, 5)\\

@@ -1,0 +1,28 @@
+axes.titlesize:  16
+axes.labelsize:  12
+axes.grid: False
+axes.labelcolor: black
+axes.edgecolor: black
+axes.spines.top: False
+axes.spines.right: False
+axes.spines.left: True
+
+axes.prop_cycle: cycler('color', ["black"])
+
+xtick.labelsize: 10
+ytick.labelsize: 10
+xtick.labelcolor: black
+ytick.labelcolor: black
+xtick.color: black
+ytick.color: black
+
+lines.color: blue
+
+figure.constrained_layout.use: True
+figure.figsize: 5, 2
+
+font.family: monospace
+
+savefig.dpi: 300
+savefig.transparent: True
+

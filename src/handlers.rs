@@ -7,10 +7,15 @@ use serde::Deserialize;
 use lettre::{Message, SmtpTransport, Transport};
 use lettre::transport::smtp::authentication::Credentials;
 use dotenv::dotenv;
+use whatlang::{Lang, Detector};
 
 use crate::metadata::Metadata;
 use crate::contact::ContactForm;
 
+const SPAM_SHARDS: &[&str] = &[
+    "we have a promotional offer",
+    "you are receiving this message",
+];
 
 #[derive(Debug, Deserialize)]
 pub struct Tag {
@@ -174,10 +179,10 @@ pub async fn send(templates: web::Data<tera::Tera>, form: web::Form<ContactForm>
             .content_type("text/html")
             .body("<p>Error! Did you provide a valid email address?</p>");
     }
-    if form.message.is_empty() || form.message.chars().count() < 10 {
+    if is_spam(&form) {
         return HttpResponse::InternalServerError()
             .content_type("text/html")
-            .body("<p>Error! Contact messages need to be > 10 characters.</p>");
+            .body("<p>Oops! Your message wasn't long enough, contained suspicious language indicative of spam, or wasn't written in English. Try again.")
     }
 
     let subject = format!("New website contact received from {from}");
@@ -209,6 +214,20 @@ pub async fn send(templates: web::Data<tera::Tera>, form: web::Form<ContactForm>
                 .body("<p>Something went wrong!</p>")
         }
     }
+}
+
+fn is_spam(form: &web::Form<ContactForm>) -> bool {
+    let allowed = std::vec![Lang::Eng];
+    let detector = Detector::with_allowlist(allowed);
+    let lang = detector.detect_lang(&form.message);
+    let is_english: bool = lang == Some(Lang::Eng);
+
+    return form.message.is_empty() || 
+        form.message.chars().count() < 20 ||
+        !is_english ||
+        SPAM_SHARDS.iter().any(|&shard| 
+            form.message.to_lowercase().contains(shard)
+        );
 }
 
 fn pull_metadatas(tag: Option<&String>) -> Result<Vec<Metadata>, std::io::Error> {

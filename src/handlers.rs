@@ -14,6 +14,7 @@ use crate::contact::ContactForm;
 
 const SPAM_SHARDS: &[&str] = &[
     "we have a promotional offer",
+    "you are receiving this message",
 ];
 
 #[derive(Debug, Deserialize)]

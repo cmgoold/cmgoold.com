@@ -15,7 +15,12 @@ use crate::contact::ContactForm;
 const SPAM_SHARDS: &[&str] = &[
     "we have a promotional offer",
     "you are receiving this message",
+    "http://",
+    "https://",
+    "whatsapp",
 ];
+
+const SPAM_CHAR: usize = 50;
 
 #[derive(Debug, Deserialize)]
 pub struct Tag {
@@ -223,7 +228,7 @@ fn is_spam(form: &web::Form<ContactForm>) -> bool {
     let is_english: bool = lang == Some(Lang::Eng);
 
     return form.message.is_empty() || 
-        form.message.chars().count() < 20 ||
+        form.message.chars().count() < SPAM_CHAR ||
         !is_english ||
         SPAM_SHARDS.iter().any(|&shard| 
             form.message.to_lowercase().contains(shard)

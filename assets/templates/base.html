@@ -1,7 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem("theme");
+            const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            const theme = savedTheme ? savedTheme : (systemDark ? "dark" : "light");
+            document.documentElement.setAttribute("data-theme", theme);
+            document.documentElement.classList.add("ready");
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/styles/main.css">
@@ -16,13 +25,12 @@
         };
     </script>
     <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-	<link rel="stylesheet" media="(prefers-color-scheme: light)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
-	<link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/brewer.css">
+	<link id="light-code" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+	<link id="dark-code" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/brewer.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/stan.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/highlightjs-line-numbers.js@2.8.0/dist/highlightjs-line-numbers.min.js"></script>
-	<script>hljs.highlightAll();</script>
     {% block head %}
     {% endblock head %}
 </head>
@@ -40,6 +48,7 @@
             {% include "footer.html" %}
         {% endblock footer %}
     </footer>
+    <script src="/scripts/data-theme-toggle.js"></script>
 </body>
 
 

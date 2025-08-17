@@ -90,9 +90,14 @@ body {
     display: flex;
     flex-direction: row;
     gap: 70%;
+    align-items: center;
+    justify-content: space-between;
 }
 
 [data-theme-toggle] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
     width: 24px;
     height: 24px;
@@ -114,8 +119,11 @@ body {
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;;
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .toggle.hidden {

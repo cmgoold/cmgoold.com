@@ -1,15 +1,7 @@
 :root {
-    --background-color: #f9f8ef; /*#f7f5e9; /*#fffff8; /*#f9f5d7; #f4f5f0; #efefef;*/
-    --font-color: black;
     --dark-gray-color: #656466; 
     --light-gray-color: #e7e9e7;
     --light-blue-color: #f9d7f5;
-    --blockquote-color: #f2f2eb;
-    --site-name-color: var(--dark-gray-color);
-    --tag-color: var(--dark-gray-color);
-    --inline-code-background: var(--light-gray-color);
-    --inline-code-border: var(--dark-gray-color);
-    --link-color: blue;
     --visited-link-color: #646093;
     --hover-link-color: var(--inline-code-background);
     --font-sans-serif: -apple-system, BlinkMacSystemFont, "segoe ui", roboto, "helvetica neue", "helvetica", arial, sans-serif; /* "Lato", sans-serif; */
@@ -21,17 +13,26 @@
     --vertical-align: middle;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background-color: #0f141a;
-        --font-color: #c5c5c5;
-        --link-color: #87ceeb;
-        --blockquote-color: #283544;
-        --inline-code-background: #3b302f;
-        --inline-code-border: var(--dark-gray-color);
-        --site-name-color: var(--font-color);
-        --tag-color: var(--dark-gray-color);
-    }
+[data-theme="light"] {
+    --background-color: #f9f8ef; /*#f7f5e9; /*#fffff8; /*#f9f5d7; #f4f5f0; #efefef;*/
+    --font-color: black;
+    --blockquote-color: #f2f2eb;
+    --site-name-color: var(--dark-gray-color);
+    --tag-color: var(--dark-gray-color);
+    --inline-code-background: var(--light-gray-color);
+    --inline-code-border: var(--dark-gray-color);
+    --link-color: blue;
+}
+
+[data-theme="dark"] {
+    --background-color: #0f141a;
+    --font-color: #c5c5c5;
+    --blockquote-color: #283544;
+    --site-name-color: var(--font-color);
+    --tag-color: var(--dark-gray-color);
+    --inline-code-background: #3b302f;
+    --inline-code-border: var(--dark-gray-color);
+    --link-color: #87ceeb;
 }
 
 body {
@@ -87,7 +88,39 @@ body {
 
 .nav-header {
     display: flex;
-    border: solid 1px;
+    flex-direction: row;
+    gap: 70%;
+}
+
+[data-theme-toggle] {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    visibility: hidden;
+}
+
+[data-theme].ready [data-theme-toggle] {
+    visibility: visible;
+}
+
+.toggle {
+    width: 24px;
+    height: 24px;
+    stroke: var(--font-color);
+    fill: var(--font-color);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: opacity 0.3s ease;
+    position: absolute;
+}
+
+.toggle.hidden {
+    opacity: 0;
+    pointer-events: none;
 }
 
 hr {

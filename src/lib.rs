@@ -28,6 +28,7 @@ pub fn serve() -> Result<Server, std::io::Error> {
         App::new()
             .app_data(web::Data::new(TEMPLATES.clone()))
             .service(Files::new("/styles", "./assets/styles/").use_last_modified(true))
+            .service(Files::new("/scripts", "./assets/scripts/").use_last_modified(true))
             .route("/status", web::get().to(HttpResponse::Ok))
             .service(handlers::index)
             .service(handlers::posts)

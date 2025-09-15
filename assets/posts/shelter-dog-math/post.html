@@ -92,7 +92,7 @@ demonstrate that the posterior probability above
 is only 52%. The argument is that aggression in dogs
 is relatively rare, probably not more than 1 in 6
 dogs, and because the posterior probability is proportional to
-the likelihood and prior, and prior has a big impact.
+the likelihood and prior, the prior has a big impact.
 </p>
 
 <p>The findings of this model are quite compelling,
@@ -122,7 +122,8 @@ $$
 
 <p>where $\theta$ is now the fixed prior probability
 of aggression, $\pi$ is now the sensitivity,
-and $\gamma$ is the specificity, given the posterior as.</p>
+and $\gamma$ is the specificity, meaning the posterior can
+be restated as:</p>
 
 $$
 \begin{equation}
@@ -188,13 +189,13 @@ care about the order the sequences come in.
 <p>Clearly, more tests help, and there are certain shelters
 employing longitudinal assessments of dog behaviour,
 where dog behaviour is monitored through time to build a better
-picture of their how they typically behave,
+picture of how they typically behave,
 a topic I in fact worked on during my PhD (see the preprint
 <a href=https://www.biorxiv.org/content/10.1101/2021.05.13.443965v1.abstract>Goold & Newberry, 2021</a>
 for more details).
 But let's take a step back and think about the generative
 process implied by this model. Firstly, $\theta$ should not
-really be a fixed 16%, because there is uncertainty about it's
+really be a fixed 16%, because there is uncertainty about its
 true value. Patronek & Bradley even mention that this is a difficult
 quantity to estimate. Secondly, the medical
 diagnostic testing framework assumes that aggression
@@ -212,7 +213,7 @@ is very close to zero.
 the model above, but rather than assuming a 16%
 fixed prior on $\theta$, we place a distribution on the
 prior propensity to show aggression.
-Let's say that $\theta \sim \mathrm{\beta}(\mu \nu, (1 - \mu) \nu)$,
+Let's say that $\theta \sim \mathrm{beta}(\mu \nu, (1 - \mu) \nu)$,
 which means $\theta$ has a  
 <a href=https://en.wikipedia.org/wiki/Beta_distribution>beta distribution</a>,
 a probability density function (pdf) bounded in the interval (0, 1),
@@ -240,10 +241,10 @@ p(z = 1 \mid n = 1, k = 1) = \frac{
 \end{equation}
 $$
 
-<p>I therefore fit this model in Stan, marginalized out the latent state $z$,
+<p>I fit this model in Stan, marginalized out the latent state $z$,
 and calculated $p(z = 1 \mid n = 1, k = 1)$ afterwards.
 If you're interested in the Stan model, you can see it at the
-<a href=https://github.com/cmgoold/cmgoold.com/assets/posts/shelter-dog-math/code/latent-severity.stan>Github repository</a>. Here's the posterior distribution of that quantity.
+<a href=https://github.com/cmgoold/cmgoold.com/blob/main/assets/posts/shelter-dog-math/code/latent-severity.stan>Github repository</a>.
 </p>
 
 <picture>
@@ -258,7 +259,7 @@ informative prior distribution, there is considerable uncertainty about the
 how predictive the test is for future levels of aggression.
 This raises a second important point: it's not so much that a single test is
 so unreliable to be useless, <i>it's that a single test is not nearly enough
-information about a dog to tell us either way if it's likely to show aggression
+information about a dog to tell us either way if they're likely to show aggression
 or not</i>.
 </p>
 

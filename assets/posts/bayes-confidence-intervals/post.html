@@ -1,0 +1,268 @@
+<p>You might have read that frequentist
+confidence intervals aren't the same as Bayesian credible intervals,
+or that confidence intervals are not probability distributions.
+Like many things in statistics, this gets confusing quickly,
+especially to data scientists, researchers or statisticians
+who just want to make some probabilistic interpretation of uncertainty
+intervals.
+This post explains why confidence
+intervals should not be interpreted as probability distributions,
+even when the results are similar.
+</p>
+
+<p>
+A confidence interval in the frequentist sense works as follows.
+Imagine you want to know the average speed people drive on the road outside your house,
+because you suspect most people exceed the 60 kilometres per hour (km/hr) speed limit.
+You find yourself buying a speed radar gun and sitting outside your house for 10 minutes
+each day recording drivers' speeds.
+You can't possibly observe every single car, 
+so the true average speed of cars is actually an unknown quantity,
+which you must learn about
+from a finite sample of speeds. You decide to collect
+100 cars' speeds, and you only record one car's speed 
+at a time at one minute intervals to ensure speeds
+are relatively independent from each other.
+Call the true average speed $\mu$, 
+and the observed speeds for the $N = 100$ cars
+$y_{i}$, for $i = 1, ..., N$,
+which are assumed to be generated from a normal distribution
+with known standard deviation 10. This isn't particularly great, 
+as the normal distribution has infinite
+support and speed has a lower bound of zero, but you do so for ease.
+You write the model for a single car's speed as:
+</p>
+
+$$
+\begin{equation}
+y_i \sim \mathrm{Normal}(\mu, 10.0)
+\end{equation}
+$$
+
+<p>and the complete likelihood can then be denoted as the
+product of normal densities:</p>
+
+$$
+\begin{equation}
+\mathcal{L}(\mu; y) = \prod_{i}^{N} \mathrm{Normal}(y_{i} \mid \mu, 10.0)
+\end{equation}
+$$
+
+<p>The likelihood is not a probability density function (PDF)
+because the data is fixed and we vary $\mu$ to determine
+which candidate $\mu$ is most consistent with the data.
+We can do this roughly in Python as follows, assuming
+a true data-generating $\mu = 64$, and working with the
+log likelihood for numerical safety.
+</p>
+
+<pre><code class="python">from scipy.stats import norm
+import numpy as np
+
+SEED = 1234
+state = {"random_state": SEED}
+
+N = 100
+mu = 64.0
+sigma = 10.0
+
+y = norm(mu, sigma).rvs(N, **state)
+
+M = 10_000
+mu_grid = np.linspace(0, 150, M)
+sigma_grid = [sigma] * M
+
+log_liks = norm(mu_grid, sigma_grid).logpdf(y[:,None]).sum(axis=0)
+
+mu_hat = mu_grid[log_liks.argmax()]
+</code></pre>
+
+<p>The maximum likelihood estimate, <code>mu_hat</code> or $\hat{\mu}$,
+is (up to computational error) the mean of $y$, $\bar{y} = 64.35$,
+so we can approximate the true data-generating process by the PDF
+$p(y \mid \mu, \sigma) = \mathrm{Normal}(y \mid 64.35, 10.0)$.
+</p>
+
+<p>Our estimate $\hat{\mu}$ is a point estimate
+of our unknown parameter $\mu$, meaning we are asserting
+$\mu = \bar{y}$ with complete precision.
+In the frequentist
+sense, this is okay, because $\mu$ is believed to be
+a fixed quantity.
+Nonetheless, we still have epistemic uncertainty
+as to the true value of this quantity because our sample, and knowledge, 
+is finite,
+and we therefore have to <i>give up</i> some of our certainty
+in the form of an uncertainty interval
+to accrue more evidence as to the true value of $\mu$.
+<a href=https://www.taylorfrancis.com/books/mono/10.1201/9781003456285/statistical-inference-roger-berger-george-casella>Casella & Berger (2002)</a> put this 
+elegantly as:
+</p>
+
+<blockquote>
+    <p>By giving up some precision in our estimate..., we have gained
+    some confidence, or assurance, that our assertion is correct.</p>
+    <p>&mdash; <em>Casella & Berger (2002, p. 418)</em></p>
+</blockquote>
+
+<p>It is good statistical practice to cede some precision for greater
+confidence, because the natural world is full of fluctuations and
+instability, and we're often safer knowing more about the likely
+bounds of this variation.
+If you want to make a case that the
+average speed of drivers exceeds 60 km/hr, your evidence
+will be stronger if you can have a high degree of confidence,
+say 95%, that the true average speed lies within some interval
+with a lower bound greater than 60 km/hr.
+</p>
+
+<p>In frequentism, 
+we cannot attach a probabilistic
+interpretation to $\mu$ itself,
+as $\mu$ is a fixed constant.
+Our estimator, however, is a random variable,
+and will vary from
+sample to sample.
+Similarly, any interval or range of values
+we derive from the sample will also
+be random variables. Importantly,
+once the interval is realized in a set
+of data, the true $\mu$ will be either
+in the interval or it won't be.
+</p>
+
+<p>
+The frequentist confidence interval is derived
+from the conditions of the assumed sampling distribution
+of our maximum likelihood estimator.
+Our model states that $y_{i} \sim \mathrm{Normal}(\mu, \sigma)$.
+Our maximum likelihood estimator, $\hat{\mu} = \bar{y}$, therefore
+has a distribution $\bar{y} \sim \mathrm{Normal}(\mu, \frac{\sigma}{\sqrt{N}})$,
+where the standard deviation is the now the standard error
+of the mean, and shrinks with greater $N$.
+For the normal distribution, 
+we know that slightly more than 95% probability
+density lies within $\pm 1.96 \sigma$ of its mean, 
+and one can use this fact to construct 
+the lower and upper bounds of an interval for the
+estimator itself:
+</p>
+
+$$
+[L(y), U(y)] = [\bar{y} - 1.96 \cdot \frac{10}{\sqrt{N}}, \bar{y} + 1.96 \cdot \frac{10}{\sqrt{N}}]
+$$
+
+<p>For the example above, this is $[62.39, 66.31]$, comfortably
+exceeding 60 km/hr.
+This does not mean that there is a 95% probability that
+$\mu \in [62.39, 66.31]$. That is a different conditional
+probability, namely $p(\mu \mid y)$. All it means is
+that if we were to repeatedly collect samples of data
+and generate similar intervals, 95% of those intervals
+would cover the true $\mu$. 
+</p> 
+
+<p>A simple simulation shows this to be the case.
+Keeping $\mu = 64.0$ and $\sigma = 10.0$ as above,
+we simulate 1000 datasets from this distribution,
+calculate the confidence interval, and check whether
+the interval covers the true value.
+</p>
+
+<pre><code class="python">S = 1000
+
+means: list[float] = []
+cis: list[tuple[float, float]] = []
+cover: list[bool] = []
+
+for _ in range(S):
+    s = norm(mu, sigma).rvs(N)
+    s_mu = s.mean()
+    s_sigma = s.std(ddof=1)
+    lower, upper = (
+        s_mu - 1.96 * s_sigma/np.sqrt(N), 
+        s_mu + 1.96 * s_sigma/np.sqrt(N),
+    )
+    means.append(s_mu)
+    cis.append((lower, upper))
+    cover.append(lower <= mu <= upper)
+
+coverage = np.mean(cover)
+</code></pre>
+
+<p>The coverage here will be close to, if not exactly,
+95%.
+</p>
+
+<p>What is the practising statistician or data scientist
+to do with this information? I view this similarly
+to the misinformation around the meaning of
+<i>p</i>-values. If you understand that
+frequentist inference provides the probability
+of your seeing your data under a given sampling distribution,
+you can make useful inferences. You know, for instance,
+that if you were to repeat the experiment many times,
+you are 5% or less likely to see a mean car speed outside
+of the range of your interval, assuming our model is
+a correct view of reality.
+That last part &mdash; the model's closeness to reality &mdash;
+is very important. For instance,
+if you had set out to sample car's speeds for 1 hour
+rather than until you reached $N = 100$, our sampling
+distribution of the estimator would be different,
+because $N$ would be a random variable, not fixed.
+</p>
+
+<p>However, most people want to attach some
+probabilistic interpretation to these confidence intervals.
+As mentioned above, this is a different conditional probability,
+from the $p(y \mid \mu, \sigma)$ above
+to the posterior distribution $p(\mu \mid y, \sigma)$.
+To convert conditional probabilities, we need a prior
+distribution, and Bayes' rule.
+</p>
+
+<p>Let's update our simple simulation above using grid approximation
+to estimate the posterior distribution.
+I'll use a prior distribution of $\mathrm{Normal}(60, 20)$
+for $\mu$.
+</p>
+
+<pre><code class="python">from scipy.stats import rv_discrete
+
+log_liks = norm(mu_grid, sigma_grid).logpdf(y[:,None]).sum(axis=0)
+
+log_prior = norm(60, 20).logpdf(mu_grid)
+
+log_post = log_liks + log_prior
+
+posterior_raw = np.exp(log_post)
+posterior = posterior_raw / posterior_raw.sum()
+
+# 1000 samples given the posterior densities
+samples = rv_discrete(values=(mu_grid, posterior)).rvs(size=1_000, **state, **state)
+</code></pre>
+
+<p>In this case, our samples have a mean of 64.37
+and 2.5% and 97.5% quantiles $[62.35, 66.43]$.
+This interval is only marginally wider than the
+frequentist confidence interval.
+The two are similar because the prior distribution
+is wide enough not to sway the posterior
+too far from the likelihood. This is why
+Bayesian and frequentist confidence intervals
+might show close similarities in practical
+applications. Usually, Bayesian analyses do not
+incorporate strong prior information, and thus
+the likelihood dominates Bayes' theorem.
+This is not a deficiency or an 
+argument against Bayesianism, 
+it's literally how the mathematics
+are meant to work.
+If we use a $\mathrm{Normal}(65, 1)$ prior
+instead, suggesting we are very sure that
+the average speed of cars is 65, 
+we get a narrower 95% credible
+interval of $[63.3, 66.2]$.
+</p>
+

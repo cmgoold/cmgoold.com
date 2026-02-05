@@ -2,7 +2,7 @@ In December, 2025, <em>The Guardian</em> published
 an article titled <em><a href=https://www.theguardian.com/uk-news/2025/dec/14/truth-about-crimes-committed-by-foreign-nationals-uk>Are asylum seekers really more likely to commit violent crime in the UK?</a></em>, which caught my attention.
 The article discussed the difficulties with
 collecting accurate data on violent crime
-statistics and immigration status,
+incidence rates and immigration status,
 and statistically correcting for common causes
 like age and sex. 
 As is common with these types of articles,
@@ -12,15 +12,16 @@ what we need to elucidate the relationship between
 crime and immigration status.
 In a world dominated by the collection and analysis
 of data, this concern is completely valid.
-However, this misses the arguably more difficult
+However, it misses the arguably more difficult
 task of making accurate causal inferences.
 Even if the data is as clean as it could
 be, we could still easily mislead ourselves by
-choosing the incorrect causal assumptions.
+testing the incorrect causal assumptions.
 </p>
 
 <p>
-Although it wasn't published, I sent an email
+Although it wasn't published, I sent an email,
+for the first time,
 to <em>The Guardian</em>'s letter section pointing out
 that getting the causal reasoning correct is
 of as much concern as is collecting accurate data.
@@ -41,6 +42,11 @@ of whether immigration status has any direct
 causal effect on crime is immeasurably  
 more complex than what I wrote in the letter,
 and what I write here in this post.
+Any statement that a variable as broad
+as immigration status is linked to
+crime should cause alarm bells to ring.
+At the same time, simple examples can be highly
+instructive in checking our causal reasoning. 
 As I mentioned in the letter,
 inferring any causal effect demands incredible
 caution and trained statisticians.
@@ -126,7 +132,8 @@ but there are others I'm sure you can think of.
 at the prison population induces a collider
 bias. A lot of the data used to infer
 the relationship between crime and immigration
-status come from the prison population and convictions.
+status come from the prison population and convictions
+data.
 Specifically, violent crime
 and immigration status might both increase
 the chances of being in prison.
@@ -199,7 +206,9 @@ If we filter for the prison population only,
 we condition on the collider,
 opening up the path between violent crime and
 immigration status. If we don't filter,
-then we get an odds ratio of 1.01% (95% HDI: [0.90, 1.12]);
+then we get an odds ratio of 1.01% (95% HDI: [0.90, 1.12]),
+and we'd conclude that there is no direct
+effect.
 </p>
 
 <h2>Final thoughts</h2>
@@ -214,6 +223,7 @@ that could help inform policy.
 I only hope that the individuals working
 on these topics are trained in causal
 inference, and have the humility to know
-that their chances of fucking-it-up are
-credibly non-zero.
+that the posterior distribution of 
+fucking-it-up even with correct data
+might not include zero.
 </p>

@@ -1,0 +1,219 @@
+In December, 2025, <em>The Guardian</em> published
+an article titled <em><a href=https://www.theguardian.com/uk-news/2025/dec/14/truth-about-crimes-committed-by-foreign-nationals-uk>Are asylum seekers really more likely to commit violent crime in the UK?</a></em>, which caught my attention.
+The article discussed the difficulties with
+collecting accurate data on violent crime
+statistics and immigration status,
+and statistically correcting for common causes
+like age and sex. 
+As is common with these types of articles,
+while there is some mention of statistical inference,
+the implication was that more accurate data is mainly
+what we need to elucidate the relationship between
+crime and immigration status.
+In a world dominated by the collection and analysis
+of data, this concern is completely valid.
+However, this misses the arguably more difficult
+task of making accurate causal inferences.
+Even if the data is as clean as it could
+be, we could still easily mislead ourselves by
+choosing the incorrect causal assumptions.
+</p>
+
+<p>
+Although it wasn't published, I sent an email
+to <em>The Guardian</em>'s letter section pointing out
+that getting the causal reasoning correct is
+of as much concern as is collecting accurate data.
+In particular, I gave two examples where the causal
+inferences are wrong and lead to opposite conclusions,
+even when data is uncontaminated.
+I won't regurgitate the letter here,
+but I will briefly summarise the examples below along with
+some example code.
+</p>
+
+<p>
+I'm sharing this purely from an interest in
+statistical inference, not for any political
+motivation.
+The question
+of whether immigration status has any direct
+causal effect on crime is immeasurably  
+more complex than what I wrote in the letter,
+and what I write here in this post.
+As I mentioned in the letter,
+inferring any causal effect demands incredible
+caution and trained statisticians.
+</p>
+
+<h2>Erroneous inference from common causes</h2>
+
+<p>
+If sex and age both increase the chances of committing
+violent crime and of being an immigrant,
+any analysis that does not condition upon
+sex and age will find a correlation
+between violent crime and immigration
+status. The code below simulates some data under
+this scenario. Note, I am using a sample of 5000 here
+to reduce the noise in estimates later.
+</p>
+
+<pre><code class="python">import numpy as np
+
+rng = np.random.default_rng(1234)
+
+def ilogit(x):
+  return np.exp(x) / (1 + np.exp(x))
+
+N = 5000
+sex = rng.binomial(1, 0.5, size=N)
+age = rng.lognormal(np.log(30), 0.2, N)
+0
+sex_z = sex - 0.5
+age_z = (age - age.mean()) / age.std()
+
+immigration = rng.binomial(1, ilogit(sex_z + -0.5 * age_z))
+crime = rng.binomial(1, ilogit(-1 + sex_z + -0.5 * age_z))
+</code></pre>
+
+<p>I then fit a simple Bernoulli regression model
+with <code>crime</code> as the response variable
+and a single predictor of <code>immigration</code>.
+</p>
+
+<pre><code class="python">
+import pymc as pm
+
+with pm.Model() as model:
+  alpha = pm.Normal("alpha", 0, 10)
+  beta = pm.Normal("beta", 0, 2)
+  eta = pm.math.invlogit(alpha + beta * (immigration - 0.5))
+  likelihood = pm.Binomial("crime", n=1, p=eta, observed=crime)
+  idata = pm.sample(1000, tune=1000, random_seed=rng)
+</code></pre>
+
+<p>This model returns a coefficient for
+$\beta$ with a mean of 0.41 and a 
+95% highest density interval (HDI) of [0.29, 0.53].
+After exponentiating to the odds scale,
+we'd conclude that being an immigrant
+increases the odds of crime by an average
+of 51% (95% HDI: [33, 70]).
+We know this is wrong, however.
+The causal effects come from
+the common causes of sex
+and age, not any direct effect
+of immigration on crime. 
+</p>
+
+<p>Adding sex and age as predictor variables
+in this model returns a coefficient
+for immigration status as covering
+zero (mean: -0.01; 95% HDI [-0.14, 0.13])
+because the common causes have been accounted
+for, and our conclusions would be correct.
+</p>
+
+<p>These results are pertinent to any potential
+common causes. Sex and age are just two suggestions,
+but there are others I'm sure you can think of.
+</p>
+
+<h2>Collider bias from conditioning on prisoners</h2>
+
+<p>The second scenario is where only looking
+at the prison population induces a collider
+bias. A lot of the data used to infer
+the relationship between crime and immigration
+status come from the prison population and convictions.
+Specifically, violent crime
+and immigration status might both increase
+the chances of being in prison.
+The first statement is obvious, the second
+is more tentative. I don't have data on this personally,
+but <em>The Guardian</em> article states that available
+data indicates offending
+rates might be higher in foreign nationals
+than British nationals.
+A prior 
+<a href="https://www.theguardian.com/uk-news/2025/oct/01/foreigners-underrepresented-among-prisoners-in-england-and-wales-report">article</a>
+also wrote that:
+</p>
+
+<blockquote>
+    <p>
+	While non-citizens made up a higher proportion of people 
+	convicted for sexual and theft offences over the past decade, 
+	researchers cautioned that a lack of data for offenders’ age and 
+	sex complicated the picture and meant it was hard to make clear assertions.
+	</p>
+	<span><em>&mdash; <a href="https://www.theguardian.com/uk-news/2025/oct/01/foreigners-underrepresented-among-prisoners-in-england-and-wales-report">The Guardian</a> (October 1st, 2025)</em></span>
+</blockquote>
+
+<p>
+I'd take this with a grain of salt,
+for the exact reasons I am writing this post,
+but it seems plausible enough.
+For instance, immigrants might be more likely
+to engage in other offences due to experiencing
+poorer socio-economic conditions or mental health problems. 
+In any case, to reiterate, my interest here is purely
+the ways in which statistical inference can lead
+to erroneous views of causality.
+</p>
+
+<p>Here's a simulation of this scenario.
+Notice how I am filtering the <code>crime</code> and 
+<code>immigration</code> variables for only those
+individuals who are in prison.
+</p>
+
+<pre><code class="python">immigration = rng.binomial(1, 0.5, size=N)
+crime = rng.binomial(1, 0.5, size=N)
+prison = rng.binomial(1, ilogit(immigration + 2 * crime))
+
+immigration_in_prison = immigration[prison == 1]
+crime_in_prison = crime[prison == 1]
+
+with pm.Model() as model:
+  alpha = pm.Normal("alpha", 0, 10)
+  beta = pm.Normal("beta", 0, 2)
+  eta = pm.math.invlogit(
+    alpha + 
+    beta * (immigration_in_prison - 0.5)
+  )
+  likelihood = pm.Binomial(
+    "crime", 
+    n=1, 
+    p=eta, 
+    observed=crime_in_prison
+  )
+  idata = pm.sample(1000, tune=1000, random_seed=rng)
+</code></pre>
+
+<p>In this scenario, we find the odds
+of violent crime decreases with immigration
+status by an average of 25% (95% HDI: [15, 34]).
+If we filter for the prison population only,
+we condition on the collider,
+opening up the path between violent crime and
+immigration status. If we don't filter,
+then we get an odds ratio of 1.01% (95% HDI: [0.90, 1.12]);
+</p>
+
+<h2>Final thoughts</h2>
+
+<p>Causal inference is fascinating,
+but it's also very troublesome. 
+Anyone leading analyses on these complicated
+topics are in unenviable positions
+of lacking clean or exhaustive-enough data
+and the pressures of finding patterns
+that could help inform policy.
+I only hope that the individuals working
+on these topics are trained in causal
+inference, and have the humility to know
+that their chances of fucking-it-up are
+credibly non-zero.
+</p>

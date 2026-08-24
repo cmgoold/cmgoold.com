@@ -1,0 +1,519 @@
+# Amended from https://pika.pika.page/robots.txt
+
+# =============================================================================
+# AI DATA SCRAPERS
+# These bots collect web content to train large language models (LLMs)
+# =============================================================================
+
+# AI2's crawler for downloading training data for open source AI models
+# https://darkvisitors.com/agents/ai2bot-dolma
+User-agent: Ai2Bot-Dolma
+Disallow: /
+
+# Anthropic's general AI crawler
+# https://darkvisitors.com/agents/anthropic-ai
+User-agent: anthropic-ai
+Disallow: /
+
+# Apple's crawler for training foundation LLM models powering Apple Intelligence
+# https://darkvisitors.com/agents/applebot-extended
+User-agent: Applebot-Extended
+Disallow: /
+
+# ByteDance's (TikTok) crawler for LLM training data including Doubao
+# https://darkvisitors.com/agents/bytespider
+User-agent: Bytespider
+Disallow: /
+
+# Common Crawl's crawler creating open web data repository used for AI training
+# https://darkvisitors.com/agents/ccbot
+User-agent: CCBot
+Disallow: /
+
+# Zhipu AI's crawler for training ChatGLM large language models
+# https://darkvisitors.com/agents/chatglm-spider
+User-agent: ChatGLM-Spider
+Disallow: /
+
+# Anthropic's crawler for downloading training data for Claude AI
+# https://darkvisitors.com/agents/claudebot
+User-agent: ClaudeBot
+Disallow: /
+
+# Google's crawler for AI training on Vertex AI platform
+# https://darkvisitors.com/agents/cloudvertexbot
+User-agent: CloudVertexBot
+Disallow: /
+
+# Cohere's crawler for enterprise AI training data
+# https://darkvisitors.com/agents/cohere-training-data-crawler
+User-agent: cohere-training-data-crawler
+Disallow: /
+
+# Japan's Research Organization crawler for AI training datasets
+# https://darkvisitors.com/agents/cotoyogi
+User-agent: Cotoyogi
+Disallow: /
+
+# German netEstate crawler for collecting and selling website data
+# https://darkvisitors.com/agents/datenbank-crawler
+User-agent: Datenbank Crawler
+Disallow: /
+
+# Crawler for aggregating and selling structured website data for AI training
+# https://darkvisitors.com/agents/diffbot
+User-agent: Diffbot
+Disallow: /
+
+# Meta's crawler for AI speech recognition training data
+# https://darkvisitors.com/agents/facebookbot
+User-agent: FacebookBot
+Disallow: /
+
+# Google's crawler for Gemini and Vertex AI training data
+# https://darkvisitors.com/agents/google-extended
+User-agent: Google-Extended
+Disallow: /
+
+# Google's generic crawler for internal R&D and AI purposes
+# https://darkvisitors.com/agents/googleother
+User-agent: GoogleOther
+Disallow: /
+
+# Google's image crawler for AI training
+# https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers
+User-agent: GoogleOther-Image
+Disallow: /
+
+# Google's video crawler for AI training
+# https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers
+User-agent: GoogleOther-Video
+Disallow: /
+
+# OpenAI's crawler for ChatGPT training data
+# https://darkvisitors.com/agents/gptbot
+User-agent: GPTBot
+Disallow: /
+
+# Japan's NICT research crawler for academic AI research
+# https://darkvisitors.com/agents/icc-crawler
+User-agent: ICC-Crawler
+Disallow: /
+
+# Image dataset downloader commonly used for AI training
+# https://github.com/rom1504/img2dataset
+User-agent: img2dataset
+Disallow: /
+
+# ByteDance's image crawler for AI products
+# https://darkvisitors.com/agents/imagespider
+User-agent: imageSpider
+Disallow: /
+
+# Image scraper for AI training purposes
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: ImagesiftBot
+Disallow: /
+
+# Crawler for training Australian-focused open source AI models
+# https://darkvisitors.com/agents/kangaroo-bot
+User-agent: Kangaroo Bot
+Disallow: /
+
+# LAION's crawler for building AI training datasets like LAION-5B
+# https://darkvisitors.com/agents/laion-huggingface-processor
+User-agent: laion-huggingface-processor
+Disallow: /
+
+# University of Leipzig crawler for linguistic corpora and NLP research
+# https://darkvisitors.com/agents/lcc
+User-agent: LCC
+Disallow: /
+
+# Meta's crawler for AI model training (uppercase variant)
+# https://darkvisitors.com/agents/meta-externalagent
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+# Meta's crawler for AI model training (lowercase variant)
+# https://darkvisitors.com/agents/meta-externalagent
+User-agent: meta-externalagent
+Disallow: /
+
+# German data scraper operated by netEstate
+# https://darkvisitors.com/agents/netestate-imprint-crawler
+User-agent: netEstate Imprint Crawler
+Disallow: /
+
+# Webz.io's crawler for web data repository sold for AI training
+# https://darkvisitors.com/agents/omgili
+User-agent: omgili
+Disallow: /
+
+# Alternate identifier for Webz.io's crawler
+# https://darkvisitors.com/agents/omgili
+User-agent: omgilibot
+Disallow: /
+
+# Huawei's crawler for PanGu multimodal LLM training
+# https://darkvisitors.com/agents/pangubot
+User-agent: PanguBot
+Disallow: /
+
+# Japanese company SB Intuitions' crawler for Japanese LLM training
+# https://darkvisitors.com/agents/sbintuitionsbot
+User-agent: SBIntuitionsBot
+Disallow: /
+
+# General AI data scraper for LLMs, RAG systems, and data analysis
+# https://darkvisitors.com/agents/spider
+User-agent: Spider
+Disallow: /
+
+# TikTok's web crawler
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: TikTokSpider
+Disallow: /
+
+# Timpi's decentralized crawler for LLM training indexes
+# https://darkvisitors.com/agents/timpibot
+User-agent: Timpibot
+Disallow: /
+
+# Velen/Hunter's crawler for ML model building
+# https://darkvisitors.com/agents/velenpublicwebcrawler
+User-agent: VelenPublicWebCrawler
+Disallow: /
+
+# Webz.io's crawler for AI training data repository (capitalized)
+# https://darkvisitors.com/agents/webzio-extended
+User-agent: Webzio-Extended
+Disallow: /
+
+# Webz.io's crawler for AI training data repository (lowercase)
+# https://darkvisitors.com/agents/webzio-extended
+User-agent: webzio-extended
+Disallow: /
+
+# =============================================================================
+# AI SEARCH CRAWLERS
+# These bots index content for AI-powered search engines and may use content
+# when responding to user prompts
+# =============================================================================
+
+# AddSearch's crawler for AI-powered site search solutions
+# https://darkvisitors.com/agents/addsearchbot
+User-agent: AddSearchBot
+Disallow: /
+
+# Amazon's crawler for Alexa and AI-powered features
+# https://darkvisitors.com/agents/amazonbot
+User-agent: Amazonbot
+Disallow: /
+
+# Direqt's crawler for AI search results
+# https://darkvisitors.com/agents/anomura
+User-agent: Anomura
+Disallow: /
+
+# Apple's crawler for Spotlight, Siri, and Safari search
+# https://darkvisitors.com/agents/applebot
+User-agent: Applebot
+Disallow: /
+
+# Atlassian's crawler for Rovo AI search and agents
+# https://darkvisitors.com/agents/atlassian-bot
+User-agent: atlassian-bot
+Disallow: /
+
+# Brave Search's crawler for AI search engine
+# https://darkvisitors.com/agents/bravebot
+User-agent: Bravebot
+Disallow: /
+
+# Channel3's crawler for universal product catalog AI
+# https://darkvisitors.com/agents/channel3bot
+User-agent: Channel3Bot
+Disallow: /
+
+# Anthropic's crawler for Claude AI search feature index
+# https://darkvisitors.com/agents/claude-searchbot
+User-agent: Claude-SearchBot
+Disallow: /
+
+# Cloudflare's crawler for AI Search RAG service
+# https://darkvisitors.com/agents/cloudflare-autorag
+User-agent: Cloudflare-AutoRAG
+Disallow: /
+
+# Google Cloud's crawler for Vertex AI Search
+# https://darkvisitors.com/agents/google-cloudvertexbot
+User-agent: Google-CloudVertexBot
+Disallow: /
+
+# Google's AI research assistant crawler
+# https://darkvisitors.com/agents/google-notebooklm
+User-agent: Google-NotebookLM
+Disallow: /
+
+# Linkup's crawler for enterprise AI search platform
+# https://darkvisitors.com/agents/linkupbot
+User-agent: LinkupBot
+Disallow: /
+
+# Meta AI's crawler for improving search results
+# https://darkvisitors.com/agents/meta-webindexer
+User-agent: meta-webindexer
+Disallow: /
+
+# OpenAI's crawler for SearchGPT
+# https://darkvisitors.com/agents/oai-searchbot
+User-agent: OAI-SearchBot
+Disallow: /
+
+# Perplexity AI's crawler for search engine indexing
+# https://darkvisitors.com/agents/perplexitybot
+User-agent: PerplexityBot
+Disallow: /
+
+# Huawei's crawler for Petal Search and Huawei Assistant AI
+# https://darkvisitors.com/agents/petalbot
+User-agent: PetalBot
+Disallow: /
+
+# You.com's crawler for AI assistant search results
+# https://darkvisitors.com/agents/youbot
+User-agent: YouBot
+Disallow: /
+
+# Zanista's AI search crawler
+# https://darkvisitors.com/agents/zanistabot
+User-agent: ZanistaBot
+Disallow: /
+
+# =============================================================================
+# AI ASSISTANTS
+# These agents visit websites on behalf of users asking questions to AI chatbots
+# =============================================================================
+
+# AI2's general bot for open source AI models
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: AI2Bot
+Disallow: /
+
+# AI2's crawler for deep research queries
+# https://darkvisitors.com/agents/ai2bot-deepresearcheval
+User-agent: AI2Bot-DeepResearchEval
+Disallow: /
+
+# Big Sur AI's crawler for AI-powered web agents and sales assistants
+# https://darkvisitors.com/agents/bigsur-ai
+User-agent: bigsur.ai
+Disallow: /
+
+# OpenAI's crawler when ChatGPT users request web information
+# https://darkvisitors.com/agents/chatgpt-user
+User-agent: ChatGPT-User
+Disallow: /
+
+# Anthropic's crawler when Claude users request web content
+# https://darkvisitors.com/agents/claude-user
+User-agent: Claude-User
+Disallow: /
+
+# Cohere's AI assistant crawler
+# https://darkvisitors.com/agents/cohere-ai
+User-agent: cohere-ai
+Disallow: /
+
+# DeepSeek's AI assistant crawler
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: DeepSeekBot
+Disallow: /
+
+# Cognition's AI software engineering assistant
+# https://darkvisitors.com/agents/devin
+User-agent: Devin
+Disallow: /
+
+# DuckDuckGo's crawler for AI-assisted answers
+# https://darkvisitors.com/agents/duckassistbot
+User-agent: DuckAssistBot
+Disallow: /
+
+# Firecrawl's web scraping agent for AI applications
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: FirecrawlAgent
+Disallow: /
+
+# Google Gemini's deep research assistant crawler
+# https://darkvisitors.com/agents/gemini-deep-research
+User-agent: Gemini-Deep-Research
+Disallow: /
+
+# iAsk AI's assistant crawler
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: iAskBot
+Disallow: /
+
+# iAsk AI's web spider
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: iaskspider
+Disallow: /
+
+# iAsk AI's web spider version 2
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: iaskspider/2.0
+Disallow: /
+
+# Klaviyo's crawler for AI-driven marketing features
+# https://darkvisitors.com/agents/klaviyoaibot
+User-agent: KlaviyoAIBot
+Disallow: /
+
+# Liner AI's crawler for academic research with citations
+# https://darkvisitors.com/agents/linerbot
+User-agent: LinerBot
+Disallow: /
+
+# Meta AI's crawler for user-initiated link fetches (lowercase)
+# https://darkvisitors.com/agents/meta-externalfetcher
+User-agent: meta-externalfetcher
+Disallow: /
+
+# Meta AI's crawler for user-initiated link fetches (uppercase)
+# https://darkvisitors.com/agents/meta-externalfetcher
+User-agent: Meta-ExternalFetcher
+Disallow: /
+
+# Mistral's Le Chat assistant crawler
+# https://darkvisitors.com/agents/mistralai-user
+User-agent: MistralAI-User
+Disallow: /
+
+# Mistral's Le Chat assistant crawler (versioned)
+# https://darkvisitors.com/agents/mistralai-user
+User-agent: MistralAI-User/1.0
+Disallow: /
+
+# Perplexity's crawler for answering user questions
+# https://darkvisitors.com/agents/perplexity-user
+User-agent: Perplexity-User
+Disallow: /
+
+# Phind's AI-powered developer answer engine
+# https://darkvisitors.com/agents/phindbot
+User-agent: PhindBot
+Disallow: /
+
+# Poggio's crawler for AI sales enablement citations
+# https://darkvisitors.com/agents/poggio-citations
+User-agent: Poggio-Citations
+Disallow: /
+
+# Qualified's crawler for AI chatbots and conversational marketing
+# https://darkvisitors.com/agents/qualifiedbot
+User-agent: QualifiedBot
+Disallow: /
+
+# Tavily's crawler for real-time AI agent data
+# https://darkvisitors.com/agents/tavilybot
+User-agent: TavilyBot
+Disallow: /
+
+# WRTN's AI assistant crawler
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: WRTNBot
+Disallow: /
+
+# AI assistant crawler
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: YaK
+Disallow: /
+
+# =============================================================================
+# AI AGENTS
+# These are autonomous browser-using AI agents that navigate websites to
+# complete tasks on behalf of users
+# =============================================================================
+
+# Amazon's AI agent for making purchases on behalf of users
+# https://darkvisitors.com/agents/amazonbuyforme
+User-agent: AmazonBuyForMe
+Disallow: /
+
+# OpenAI's browser-using AI agent for multi-step tasks
+# https://darkvisitors.com/agents/chatgpt-agent
+User-agent: ChatGPT Agent
+Disallow: /
+
+# Google's browser-using AI agent
+# https://darkvisitors.com/agents/googleagent-mariner
+User-agent: GoogleAgent-Mariner
+Disallow: /
+
+# Butterfly Effect's autonomous browser AI agent from China
+# https://darkvisitors.com/agents/manus-user
+User-agent: Manus-User
+Disallow: /
+
+# Amazon's browser-using AI agent for multi-step tasks
+# https://darkvisitors.com/agents/novaact
+User-agent: NovaAct
+Disallow: /
+
+# OpenAI's AI agent for browser automation
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: Operator
+Disallow: /
+
+# Twin's automated worker agent for API and browser automation
+# https://darkvisitors.com/agents/twinagent
+User-agent: TwinAgent
+Disallow: /
+
+# =============================================================================
+# OTHER AI-RELATED CRAWLERS
+# Miscellaneous crawlers that may be used for AI purposes
+# =============================================================================
+
+# AI-related crawler
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: aiHitBot
+Disallow: /
+
+# Andi search AI crawler
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: Andibot
+Disallow: /
+
+# Social listening and web monitoring crawler
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: Awario
+Disallow: /
+
+# Amazon Bedrock AI crawler
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: bedrockbot
+Disallow: /
+
+# Anthropic's web crawler (purpose unclear)
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: Claude-Web
+Disallow: /
+
+# Open source AI-focused web crawler
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: Crawl4AI
+Disallow: /
+
+# AI-related web crawler
+# https://github.com/ai-robots-txt/ai.robots.txt
+User-agent: Crawlspace
+Disallow: /
+
+# Popular Python web scraping framework identifier
+# https://scrapy.org/
+User-agent: Scrapy
+Disallow: /
+

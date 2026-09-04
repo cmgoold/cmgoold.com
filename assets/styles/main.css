@@ -108,7 +108,20 @@ h1, h2, h3 {
 }
 
 .site-name {
-    font-family: var(--font-monospace);
+    font-family: var(--font-sans-serif);
+    color: var(--site-name-color);
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.site-name a {
+    color: var(--site-name-color);
+    font-weight: bold;
+    font-size: 1.5rem;
+    text-decoration: underline;
+}
+
+.site-name a:visited {
     color: var(--site-name-color);
     font-weight: bold;
     font-size: 1.5rem;
@@ -139,7 +152,7 @@ h1, h2, h3 {
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
-    transition: opacity 0.3s ease, transform 0.3s ease;;
+    transition: opacity 0.3s ease, transform 0.3s ease;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -173,42 +186,40 @@ a:hover {
     background-color: var(--hover-link-color);
 }
 
-.nav-header {
+nav {
     display: flex;
     flex-direction: row;
-    gap: 70%;
-    align-items: center;
-    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    gap: 5%;
 }
 
-nav {
+nav .menu {
+    display: flex;
+    flex-direction: row;
     width: 100%;
 }
 
-nav a {
-    font-family: var(--font-monospace);
-    font-size: 1rem;
+nav .menu ul {
+    display: flex;
+    list-style-type: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    gap: 0.7rem;
 }
 
-nav a:visited {
+nav .menu ul li {
+}
+
+nav .menu ul li a {
+    font-family: var(--font-sans-serif);
+    font-size: 1.1rem;
+}
+
+nav .menu ul li a:visited {
     color: var(--link-color);
 }
-
-
-nav ul {
-    list-style-type: none;
-    margin-left: 0;
-    margin-bottom: 2%;
-    padding: 0;
-    overflow: hidden;
-    width: 100%;
-}
-
-nav ul li {
-    float: left;
-    padding-right: 3%;
-}
-
 
 code {
     font-family: var(--font-monospace);
@@ -296,8 +307,14 @@ img {
     height: auto;
 }
 
-.dag {
-    width: 600px;
+.dag-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+svg.dag {
+    display: block;
+    width: max(100%, 500px);
     height: auto;
     stroke: var(--font-color);
     fill: var(--font-color);
@@ -360,4 +377,8 @@ caption {
 
 mjx-container {
   overflow-x: auto;
+}
+
+span.small-caps {
+    font-variant: small-caps;
 }

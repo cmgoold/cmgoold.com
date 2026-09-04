@@ -1,3 +1,13 @@
+@font-face {
+    font-family: "Adobe Caslon Pro Regular";
+    src: url('./fonts/AdobeCaslonProRegular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: "Computer Modern Serif Roman";
+    src: url('./fonts/cmu.serif-roman.ttf') format('truetype');
+}
+
 :root {
     --dark-gray-color: #656466; 
     --light-gray-color: #e7e9e7;
@@ -5,9 +15,9 @@
     --visited-link-color: #646093;
     --hover-link-color: var(--inline-code-background);
     --font-sans-serif: -apple-system, BlinkMacSystemFont, "segoe ui", roboto, "helvetica neue", "helvetica", arial, sans-serif; /* "Lato", sans-serif; */
-    --font-serif: "Apple Garamond", "Iowan Old Style", Baskerville, "Times New Roman", "Droid Serif", Times, "Source Serif Pro", serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --font-serif: "Adobe Caslon Pro Regular", "Apple Garamond", "Iowan Old Style", Baskerville, "Times New Roman", "Droid Serif", Times, "Source Serif Pro", serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     --font-monospace: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
-    --body-font-size: 1.2rem;
+    --body-font-size: 1.25rem;
     --small-font-size: 0.8rem;
     --line-height: 1.4;
     --vertical-align: middle;
@@ -40,10 +50,22 @@
 body {
     background-color: var(--background-color);
     color: var(--font-color);
-    font-family: var(--font-sans-serif);
+    font-family: var(--font-serif);
     font-size: var(--body-font-size);
     line-height: var(--line-height);
     vertical-align: var(--vertical-align);
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+h3 {
+    font-size: 1.3rem;
 }
 
 h1, h2, h3 {

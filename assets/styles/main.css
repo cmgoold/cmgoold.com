@@ -1,11 +1,6 @@
 @font-face {
-    font-family: "Adobe Caslon Pro Regular";
-    src: url('./fonts/AdobeCaslonProRegular.ttf') format('truetype');
-}
-
-@font-face {
-    font-family: "Computer Modern Serif Roman";
-    src: url('./fonts/cmu.serif-roman.ttf') format('truetype');
+    font-family: "Cormorant Garamond Medium";
+    src: url('./fonts/CormorantGaramond-Medium.ttf') format('truetype');
 }
 
 :root {
@@ -15,9 +10,9 @@
     --visited-link-color: #646093;
     --hover-link-color: var(--inline-code-background);
     --font-sans-serif: -apple-system, BlinkMacSystemFont, "segoe ui", roboto, "helvetica neue", "helvetica", arial, sans-serif; /* "Lato", sans-serif; */
-    --font-serif: "Adobe Caslon Pro Regular", "Apple Garamond", "Iowan Old Style", Baskerville, "Times New Roman", "Droid Serif", Times, "Source Serif Pro", serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --font-serif: "Cormorant Garamond Medium", "Apple Garamond", "Iowan Old Style", Baskerville, "Times New Roman", "Droid Serif", Times, "Source Serif Pro", serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     --font-monospace: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
-    --body-font-size: 1.25rem;
+    --body-font-size: 1.3rem;
     --small-font-size: 0.8rem;
     --line-height: 1.4;
     --vertical-align: middle;

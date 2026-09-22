@@ -13,7 +13,7 @@
 
 {% if tag %}
     <p class=filter>
-        filter: <code>{{ tag }}</code>
+        filter: <span class=tags><a>{{ tag }}</a></span>
         <a href="/posts">(reset)</a>
     </p>
 {% endif %}
@@ -25,11 +25,11 @@
                 {{ datetimes[loop.index0] | date(format="%b %d, %Y") }}
             </span>
             <span class=post-list><a href="/posts/{{ m.slug }}">{{ m.title }}</a>
-            <span class="tags">
-                {% for tag in m.tags %}
-                    [<a href="/posts?tag={{ tag }}">{{ tag }}</a>]
-                {% endfor %}
-            </span>
+                <span class="tags">
+                    {% for tag in m.tags %}
+                        <a href="/posts?tag={{ tag }}">{{ tag }}</a>
+                    {% endfor %}
+                </span>
             </span>
         </li>
     {% endfor %}

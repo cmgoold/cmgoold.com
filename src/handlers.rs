@@ -6,7 +6,7 @@ use ignore::WalkBuilder;
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::{Message, SmtpTransport, Transport};
 use serde::Deserialize;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 use std::time::SystemTime;
 use whatlang::{Detector, Lang};
 

@@ -2,9 +2,9 @@ use actix_files::Files;
 use actix_web::{dev::Server, web, App, HttpResponse, HttpServer};
 use tera::Tera;
 
+mod contact;
 mod handlers;
 mod metadata;
-mod contact;
 
 #[macro_use]
 extern crate lazy_static;

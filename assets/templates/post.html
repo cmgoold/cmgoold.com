@@ -4,19 +4,15 @@
     <title>cmgoold/posts/{{ metadata.slug }}</title>
 {% endblock head %}
 
-{% block header %}
-    {% include "navigation.html" %}
-{% endblock header %}
-
 {% block content %}
     <h1>{{ metadata.title }}</h1>
     <div class=metadata> 
         <ul>
             <li>
-                <span class=tags>
-                    tags: 
+                <span>tags: </span>
+                <span class="tags">
                     {% for tag in metadata.tags %}
-                        [<a href=/posts?tag={{ tag }}>{{ tag }}</a>]
+                        <a href=/posts?tag={{ tag }}>{{ tag }}</a>
                     {% endfor %}
                 </span>
             </li>

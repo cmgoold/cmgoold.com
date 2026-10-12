@@ -13,25 +13,30 @@
 
 {% if tag %}
     <p class=filter>
-        filter: <code>{{ tag }}</code>
+        filter: <span class=tags><a>{{ tag }}</a></span>
         <a href="/posts">(reset)</a>
     </p>
 {% endif %}
 
 <ul class="posts">
-    {% for m in metadata %}
+    {% for meta in metadata %}
+        <div class=post-years>
+            <span>{{ meta[0] }}</span>
+        </div>
+        {% for m in meta[1] %} 
         <li>
             <span class=datetime>
-                {{ datetimes[loop.index0] | date(format="%b %d, %Y") }}
+                {{ m.date }}
             </span>
             <span class=post-list><a href="/posts/{{ m.slug }}">{{ m.title }}</a>
-            <span class="tags">
-                {% for tag in m.tags %}
-                    [<a href="/posts?tag={{ tag }}">{{ tag }}</a>]
-                {% endfor %}
-            </span>
+                <span class="tags">
+                    {% for tag in m.tags %}
+                        <a href="/posts?tag={{ tag }}">{{ tag }}</a>
+                    {% endfor %}
+                </span>
             </span>
         </li>
+    {% endfor %}
     {% endfor %}
 </ul>
 {% endblock content %}

@@ -1,0 +1,12 @@
+axes.labelcolor: "c5c5c5"
+axes.edgecolor: "c5c5c5"
+xtick.labelcolor: "c5c5c5"
+ytick.labelcolor: "c5c5c5"
+xtick.color: "c5c5c5"
+ytick.color: "c5c5c5"
+
+text.color: "c5c5c5"
+
+legend.labelcolor: "c5c5c5"
+
+axes.prop_cycle: cycler('color', ["c5c5c5"])

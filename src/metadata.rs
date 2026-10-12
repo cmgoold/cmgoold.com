@@ -1,7 +1,8 @@
+use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
-use chrono::{NaiveDate};
+use std::fmt;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Metadata {
     title: String,
     pub date: String,
@@ -17,11 +18,15 @@ impl Metadata {
         if name == "edited" && self.edited_date.is_some() {
             let edited = match &self.edited_date {
                 Some(d) => d,
-                None => ""
+                None => "",
             };
             NaiveDate::parse_from_str(&edited, "%Y-%m-%d").unwrap()
         } else {
             NaiveDate::parse_from_str(&self.date, "%Y-%m-%d").unwrap()
         }
+    }
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let elements = &self.title;
+        write!(f, "{}", elements)
     }
 }

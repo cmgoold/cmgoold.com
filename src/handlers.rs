@@ -1,16 +1,17 @@
-use actix_web::{get, post, web, Error, HttpResponse, HttpRequest, Responder};
 use actix_web::http::header::{ContentDisposition, DispositionType};
-use ignore::WalkBuilder;
-use std::time::SystemTime;
-use chrono::{DateTime, Utc};
-use serde::Deserialize;
-use lettre::{Message, SmtpTransport, Transport};
-use lettre::transport::smtp::authentication::Credentials;
+use actix_web::{get, post, web, Error, HttpRequest, HttpResponse, Responder};
+use chrono::{DateTime, Datelike, Utc};
 use dotenv::dotenv;
-use whatlang::{Lang, Detector};
+use ignore::WalkBuilder;
+use lettre::transport::smtp::authentication::Credentials;
+use lettre::{Message, SmtpTransport, Transport};
+use serde::Deserialize;
+use std::collections::{HashMap, HashSet};
+use std::time::SystemTime;
+use whatlang::{Detector, Lang};
 
-use crate::metadata::Metadata;
 use crate::contact::ContactForm;
+use crate::metadata::Metadata;
 
 const SPAM_SHARDS: &[&str] = &[
     "we have a promotional offer",
@@ -24,7 +25,7 @@ const SPAM_CHAR: usize = 50;
 
 #[derive(Debug, Deserialize)]
 pub struct Tag {
-    tag: Option<String>
+    tag: Option<String>,
 }
 
 #[get("/")]
@@ -51,7 +52,7 @@ pub async fn posts(templates: web::Data<tera::Tera>, request: HttpRequest) -> im
     let query = web::Query::<Tag>::from_query(request.query_string()).unwrap();
     let tag = match &query.tag {
         Some(s) => Some(s),
-        None => None
+        None => None,
     };
 
     let metadata = match pull_metadatas(tag) {
@@ -63,13 +64,9 @@ pub async fn posts(templates: web::Data<tera::Tera>, request: HttpRequest) -> im
                 .body("<p>Something went wrong</p>");
         }
     };
-
-    let datetimes: Vec<_> = metadata.iter()
-        .map(|m| m.string_date_to_datetime("date"))
-        .collect();
+    println!("{:?}", &metadata);
 
     context.insert("metadata", &metadata);
-    context.insert("datetimes", &datetimes);
     context.insert("tag", &tag);
 
     match templates.render("posts.html", &context) {
@@ -84,16 +81,18 @@ pub async fn posts(templates: web::Data<tera::Tera>, request: HttpRequest) -> im
 }
 
 #[get("/posts/{slug}/static/{file_path}")]
-pub async fn serve_static(path: web::Path<(String, String)>) ->  Result<actix_files::NamedFile, Error> {
+pub async fn serve_static(
+    path: web::Path<(String, String)>,
+) -> Result<actix_files::NamedFile, Error> {
     let (slug, file_path) = path.into_inner();
-    let file = actix_files::NamedFile::open(format!("./assets/posts/{}/static/{}", slug, file_path))?;
+    let file =
+        actix_files::NamedFile::open(format!("./assets/posts/{}/static/{}", slug, file_path))?;
     Ok(file
         .use_last_modified(true)
         .set_content_disposition(ContentDisposition {
             disposition: DispositionType::Attachment,
             parameters: vec![],
-        })
-    )
+        }))
 }
 
 #[get("/posts/{slug}")]
@@ -158,7 +157,10 @@ pub async fn contact(templates: web::Data<tera::Tera>) -> impl Responder {
 }
 
 #[post("/contact")]
-pub async fn send(templates: web::Data<tera::Tera>, form: web::Form<ContactForm>) -> impl Responder {
+pub async fn send(
+    templates: web::Data<tera::Tera>,
+    form: web::Form<ContactForm>,
+) -> impl Responder {
     let mut context = tera::Context::new();
     context.insert("file", "");
 
@@ -187,7 +189,7 @@ pub async fn send(templates: web::Data<tera::Tera>, form: web::Form<ContactForm>
     if is_spam(&form) {
         return HttpResponse::InternalServerError()
             .content_type("text/html")
-            .body("<p>Oops! Your message wasn't long enough, contained suspicious language indicative of spam, or wasn't written in English. Try again.")
+            .body("<p>Oops! Your message wasn't long enough, contained suspicious language indicative of spam, or wasn't written in English. Try again.");
     }
 
     let subject = format!("New website contact received from {from}");
@@ -227,15 +229,15 @@ fn is_spam(form: &web::Form<ContactForm>) -> bool {
     let lang = detector.detect_lang(&form.message);
     let is_english: bool = lang == Some(Lang::Eng);
 
-    return form.message.is_empty() || 
-        form.message.chars().count() < SPAM_CHAR ||
-        !is_english ||
-        SPAM_SHARDS.iter().any(|&shard| 
-            form.message.to_lowercase().contains(shard)
-        );
+    return form.message.is_empty()
+        || form.message.chars().count() < SPAM_CHAR
+        || !is_english
+        || SPAM_SHARDS
+            .iter()
+            .any(|&shard| form.message.to_lowercase().contains(shard));
 }
 
-fn pull_metadatas(tag: Option<&String>) -> Result<Vec<Metadata>, std::io::Error> {
+fn pull_metadatas(tag: Option<&String>) -> Result<Vec<(i32, Vec<Metadata>)>, std::io::Error> {
     let mut t = ignore::types::TypesBuilder::new();
     t.add_defaults();
     let tomls = match t.select("toml").build() {
@@ -288,9 +290,33 @@ fn pull_metadatas(tag: Option<&String>) -> Result<Vec<Metadata>, std::io::Error>
         }
     }
 
-    metadatas.sort_by(|a, b| b.string_date_to_datetime("date").cmp(&a.string_date_to_datetime("date")));
+    metadatas.sort_by(|a, b| {
+        b.string_date_to_datetime("date")
+            .cmp(&a.string_date_to_datetime("date"))
+    });
 
-    Ok(metadatas)
+    let post_years: HashSet<i32> = metadatas
+        .clone()
+        .iter()
+        .map(|m| m.string_date_to_datetime("date").year())
+        .collect();
+
+    let mut mapped_posts: Vec<(i32, Vec<Metadata>)> = post_years
+        .into_iter()
+        .map(|y| {
+            (
+                y,
+                metadatas
+                    .clone()
+                    .into_iter()
+                    .filter(|m| m.string_date_to_datetime("date").year() == y)
+                    .collect::<Vec<Metadata>>(),
+            )
+        })
+        .collect();
+    mapped_posts.sort_by(|a, b| b.0.cmp(&a.0));
+
+    Ok(mapped_posts)
 }
 
 fn pull_post(slug: &str) -> Result<String, std::io::Error> {

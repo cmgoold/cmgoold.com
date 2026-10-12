@@ -1,0 +1,5 @@
+title = "Hierarchical ordinal modeling of book reviews"
+date = "2026-10-01"
+slug = "ordinal-model-book-reviews"
+tags = ["Bayesian", "Stan", "books"]
+publish = true

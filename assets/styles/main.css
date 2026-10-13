@@ -4,7 +4,7 @@
     --light-blue-color: #f9d7f5;
     --visited-link-color: #646093;
     --hover-link-color: var(--inline-code-background);
-    --font-sans-serif: -apple-system, BlinkMacSystemFont, "segoe ui", roboto, "helvetica neue", "helvetica", arial, sans-serif; /* "Lato", sans-serif; */
+    --font-sans-serif: "inter-18pt", -apple-system, BlinkMacSystemFont, "segoe ui", roboto, "helvetica neue", "helvetica", arial, sans-serif; /* "Lato", sans-serif; */
     --font-serif: "adobe-garamond-pro", "Apple Garamond", "Iowan Old Style", Baskerville, "Times New Roman", "Droid Serif", Times, "Source Serif Pro", serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     --font-monospace: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
     --body-font-size: 1.3rem;
@@ -57,7 +57,7 @@
 body {
     background-color: var(--background-color);
     color: var(--font-color);
-    font-family: var(--font-serif);
+    font-family: var(--font-sans-serif);
     font-size: var(--body-font-size);
     font-weight: 400;
     font-style: normal;
@@ -146,6 +146,12 @@ h3 {
     font-weight: bold;
     font-size: 1.5rem;
     text-decoration: underline var(--tag-border-color);
+}
+
+.toggles {
+    display: flex;
+    flex-direction: row;
+    gap 1%;
 }
 
 button.toggle-button {

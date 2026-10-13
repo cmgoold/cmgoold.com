@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" font-theme="serif">
 
 <head>
     <script>
         (function() {
             const savedTheme = localStorage.getItem("theme");
+            const savedFont = localStorage.getItem("font");
             const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
             const theme = savedTheme ? savedTheme : (systemDark ? "dark" : "light");
+            const font = savedFont ? savedFont : "serif";
             document.documentElement.setAttribute("data-theme", theme);
+            document.documentElement.setAttribute("font-theme", font);
             document.documentElement.classList.add("ready");
         })();
     </script>
@@ -59,6 +62,7 @@
         {% endblock footer %}
     </footer>
     <script src="/scripts/data-theme-toggle.js"></script>
+    <script src="/scripts/typography-toggle.js"></script>
 </body>
 
 

@@ -4,10 +4,9 @@
     --light-blue-color: #f9d7f5;
     --visited-link-color: #646093;
     --hover-link-color: var(--inline-code-background);
-    --font-sans-serif: "inter-18pt", -apple-system, BlinkMacSystemFont, "segoe ui", roboto, "helvetica neue", "helvetica", arial, sans-serif; /* "Lato", sans-serif; */
+    --font-sans-serif: "acumin-pro", -apple-system, BlinkMacSystemFont, "segoe ui", roboto, "helvetica neue", "helvetica", arial, sans-serif; /* "Lato", sans-serif; */
     --font-serif: "adobe-garamond-pro", "Apple Garamond", "Iowan Old Style", Baskerville, "Times New Roman", "Droid Serif", Times, "Source Serif Pro", serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     --font-monospace: Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
-    --body-font-size: 1.3rem;
     --small-font-size: 0.7rem;
     --line-height: 1.4;
     --vertical-align: middle;
@@ -16,7 +15,6 @@
 [data-theme="light"] {
     --background-color: #FAFAFA; /*#F7F3E6; /*#FEF9F5; /*#fff8e5; /*#f9f8ef; /*#f7f5e9; /*#fffff8; /*#f9f5d7; #f4f5f0; #efefef; */
     --font-color: #000000;
-    --header-font-color: #000000;
     --blockquote-color: #F2F2F2; /*#F1E9D2; /*#f2f2eb; /* #fdf5e6; /* #f2f2eb; */
     --site-name-color: black; /*var(--dark-gray-color);*/
     --tag-color: var(--dark-gray-color);
@@ -54,10 +52,20 @@
     --tag-border-color: var(--link-color);
 }
 
+[font-theme="serif"] {
+    --body-font-size: 1.3rem;
+    --body-font: var(--font-serif);
+}
+
+[font-theme="sans-serif"] {
+    --body-font-size: 1.2rem;
+    --body-font: var(--font-sans-serif);
+}
+
 body {
     background-color: var(--background-color);
     color: var(--font-color);
-    font-family: var(--font-sans-serif);
+    font-family: var(--body-font);
     font-size: var(--body-font-size);
     font-weight: 400;
     font-style: normal;
@@ -148,12 +156,6 @@ h3 {
     text-decoration: underline var(--tag-border-color);
 }
 
-.toggles {
-    display: flex;
-    flex-direction: row;
-    gap 1%;
-}
-
 button.toggle-button {
     display: flex;
     position: relative;
@@ -168,10 +170,22 @@ button.toggle-button {
     visibility: hidden;
 }
 
+button.font-toggle-button {
+    display: flex;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    width: 24px;
+    height: 24px;
+    border: none;
+    align-items: center;
+    background: none;
+    cursor: pointer;
+}
+
 [data-theme].ready .toggle-button {
     visibility: visible;
 }
-
 
 .toggle {
     position: absolute;
@@ -185,13 +199,26 @@ button.toggle-button {
     stroke-linecap: round;
     stroke-linejoin: round;
     transition: opacity 0.3s ease, transform 0.3s ease;
-    padding: 0!important;
-    margin: 0!important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.toggle:hover {
+    padding: 0;
+    margin: 0;
 }
 
 .toggle.hidden {
     opacity: 0;
     pointer-events: none;
+}
+
+.toggle.serif {
+    border-bottom: solid 2px var(--tag-border-color);
+}
+
+.toggle.sans-serif {
+    border-bottom: solid 2px black;
 }
 
 hr {
@@ -202,7 +229,7 @@ hr {
 
 footer {
     width: calc(100% - var(--right-margin));
-    padding: 1%;
+    padding: 10px;
 }
 
 footer .copyright {
@@ -228,14 +255,14 @@ nav {
     align-items: center;
     justify-content: space-between;
     width: calc(100% - var(--right-margin));
-    gap: 5%;
+    gap: 10px;
     background: inherit;
-    padding-left: 1%;
+    padding-left: 10px;
     margin-top: 0%;
     margin-bottom: 0%;
     z-index: 999;
     opacity: 95%;
-    font-family: var(--font-monospace);
+    font-family: var(--font-sans-serif);
 }
 
 nav .nav-menu {
@@ -246,6 +273,7 @@ nav .nav-menu {
     width: 100%;
     border-bottom: 2px solid var(--dark-gray-color);
     padding: 0;
+    margin: 0;
 }
 
 nav .menu {
@@ -254,8 +282,8 @@ nav .menu {
     align-items: center;
     justify-content: end;
     width: 100%;
-    padding: 1%;
-    margin-right: 1%;
+    padding: 1px;
+    margin-right: 1px;
 }
 
 nav .menu ul {
@@ -263,9 +291,9 @@ nav .menu ul {
     justify-content: end;
     align-items: center;
     list-style-type: none;
-    font-family: var(--font-monospace);
     font-variant: small-caps;
-    gap: 20%;
+    font-family: var(--font-monospace);
+    gap: 30px;
     margin: 0;
     padding: 0;
 }
@@ -282,6 +310,14 @@ nav .menu ul li a {
 nav .menu ul li a:visited {
     color: var(--link-color);
 }
+
+nav .menu ul li .toggles {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 5px;
+}
+
 
 code {
     font-family: var(--font-monospace);

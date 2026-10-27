@@ -1,0 +1,52 @@
+data {
+    int<lower=0> N;
+    int<lower=0> T;
+    int<lower=1> M;
+    int<lower=1> P;
+    int<lower=2> K;
+    array[N] int<lower=1, upper=M> m;
+    array[N] int<lower=1, upper=P> p;
+    array[T] int<lower=0> m_test;
+    array[T] int<lower=0> p_test;
+    array[N] real<lower=1, upper=K> y;
+    array[T] real<lower=1, upper=K> y_test;
+}
+
+parameters {
+    real mu;
+    vector[M] z_m;
+    vector[P] z_p;
+    real<lower=0> tau;
+    real<lower=0> delta;
+}
+
+transformed parameters {
+    vector[N] lp;
+
+    for(n in 1:N) {
+        real eta = mu + tau * z_m[m[n]] + delta * z_p[p[n]];
+        lp[n] = poisson_lpmf(y[n] | exp(eta));
+    }
+}
+
+model {
+    mu ~ normal(0, 10);
+    z_m ~ std_normal();
+    z_p ~ std_normal();
+    tau ~ std_normal();
+    delta ~ std_normal();
+    target += sum(lp);
+}
+
+generated quantities {
+    vector[T] lp_test;
+
+    for(t in 1:T) {
+        real zeta = mu;
+        if(m_test[t] > 0)
+            zeta += tau * z_m[m_test[t]];
+        if(p_test[t] > 0)
+            zeta += delta * z_p[p_test[t]];
+        lp_test[t] = poisson_lpmf(y_test[t] | exp(zeta));
+    }
+}

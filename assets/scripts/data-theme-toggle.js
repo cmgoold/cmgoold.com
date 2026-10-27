@@ -38,9 +38,8 @@ function updateCodeTheme(theme) {
 }
 
 
-const button = document.querySelector("[data-theme-toggle]");
+const button = document.querySelector(".toggle-button");
 const localTheme = localStorage.getItem("theme");
-console.log(localTheme);
 const systemSettingDark = window.matchMedia("(prefers-color-scheme: dark)");
 
 let currentTheme = getSystemTheme(localTheme, systemSettingDark);

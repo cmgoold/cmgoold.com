@@ -1,16 +1,16 @@
-use actix_web::{get, post, web, Error, HttpResponse, HttpRequest, Responder};
 use actix_web::http::header::{ContentDisposition, DispositionType};
-use ignore::WalkBuilder;
-use std::time::SystemTime;
-use chrono::{DateTime, Utc};
-use serde::Deserialize;
-use lettre::{Message, SmtpTransport, Transport};
-use lettre::transport::smtp::authentication::Credentials;
+use actix_web::{get, post, web, Error, HttpRequest, HttpResponse, Responder};
+use chrono::{DateTime, Datelike, Utc};
 use dotenv::dotenv;
-use whatlang::{Lang, Detector};
+use ignore::WalkBuilder;
+use lettre::transport::smtp::authentication::Credentials;
+use lettre::{Message, SmtpTransport, Transport};
+use serde::Deserialize;
+use std::collections::HashSet;
+use std::time::SystemTime;
+use whatlang::{Detector, Lang};
 
 use crate::metadata::Metadata;
-use crate::contact::ContactForm;
 
 const SPAM_SHARDS: &[&str] = &[
     "we have a promotional offer",
@@ -24,7 +24,21 @@ const SPAM_CHAR: usize = 50;
 
 #[derive(Debug, Deserialize)]
 pub struct Tag {
-    tag: Option<String>
+    tag: Option<String>,
+}
+
+#[get("/colophon")]
+pub async fn colophon(templates: web::Data<tera::Tera>) -> impl Responder {
+    let context = tera::Context::new();
+    match templates.render("colophon.html", &context) {
+        Ok(s) => HttpResponse::Ok().content_type("text/html").body(s),
+        Err(e) => {
+            println!("{:?}", e);
+            HttpResponse::InternalServerError()
+                .content_type("text/html")
+                .body("<p>Something went wrong!</p>")
+        }
+    }
 }
 
 #[get("/")]
@@ -51,7 +65,7 @@ pub async fn posts(templates: web::Data<tera::Tera>, request: HttpRequest) -> im
     let query = web::Query::<Tag>::from_query(request.query_string()).unwrap();
     let tag = match &query.tag {
         Some(s) => Some(s),
-        None => None
+        None => None,
     };
 
     let metadata = match pull_metadatas(tag) {
@@ -63,13 +77,9 @@ pub async fn posts(templates: web::Data<tera::Tera>, request: HttpRequest) -> im
                 .body("<p>Something went wrong</p>");
         }
     };
-
-    let datetimes: Vec<_> = metadata.iter()
-        .map(|m| m.string_date_to_datetime("date"))
-        .collect();
+    println!("{:?}", &metadata);
 
     context.insert("metadata", &metadata);
-    context.insert("datetimes", &datetimes);
     context.insert("tag", &tag);
 
     match templates.render("posts.html", &context) {
@@ -84,16 +94,18 @@ pub async fn posts(templates: web::Data<tera::Tera>, request: HttpRequest) -> im
 }
 
 #[get("/posts/{slug}/static/{file_path}")]
-pub async fn serve_static(path: web::Path<(String, String)>) ->  Result<actix_files::NamedFile, Error> {
+pub async fn serve_static(
+    path: web::Path<(String, String)>,
+) -> Result<actix_files::NamedFile, Error> {
     let (slug, file_path) = path.into_inner();
-    let file = actix_files::NamedFile::open(format!("./assets/posts/{}/static/{}", slug, file_path))?;
+    let file =
+        actix_files::NamedFile::open(format!("./assets/posts/{}/static/{}", slug, file_path))?;
     Ok(file
         .use_last_modified(true)
         .set_content_disposition(ContentDisposition {
             disposition: DispositionType::Attachment,
             parameters: vec![],
-        })
-    )
+        }))
 }
 
 #[get("/posts/{slug}")]
@@ -141,101 +153,7 @@ pub async fn post(templates: web::Data<tera::Tera>, slug: web::Path<String>) -> 
     }
 }
 
-#[get("/contact")]
-pub async fn contact(templates: web::Data<tera::Tera>) -> impl Responder {
-    let mut context = tera::Context::new();
-    context.insert("file", "");
-
-    match templates.render("contact.html", &context) {
-        Ok(s) => HttpResponse::Ok().content_type("text/html").body(s),
-        Err(e) => {
-            println!("{:?}", e);
-            HttpResponse::InternalServerError()
-                .content_type("text/html")
-                .body("<p>Something went wrong!</p>")
-        }
-    }
-}
-
-#[post("/contact")]
-pub async fn send(templates: web::Data<tera::Tera>, form: web::Form<ContactForm>) -> impl Responder {
-    let mut context = tera::Context::new();
-    context.insert("file", "");
-
-    let submitted = true;
-    context.insert("submitted", &submitted);
-    context.insert("name", &form.name);
-
-    let name = form.name.to_owned();
-    let from_email = form.email.to_owned();
-    let from = format!("{name} <{from_email}>");
-
-    dotenv().ok();
-    let to = std::env::var("FORWARDING_EMAIL")
-        .ok()
-        .unwrap_or(String::from(""));
-    println!("To address set to {}", to);
-
-    let username = std::env::var("USERNAME").ok().unwrap_or(String::from(""));
-    let password = std::env::var("PASSWORD").ok().unwrap_or(String::from(""));
-
-    if from_email.is_empty() || !from_email.contains("@") {
-        return HttpResponse::InternalServerError()
-            .content_type("text/html")
-            .body("<p>Error! Did you provide a valid email address?</p>");
-    }
-    if is_spam(&form) {
-        return HttpResponse::InternalServerError()
-            .content_type("text/html")
-            .body("<p>Oops! Your message wasn't long enough, contained suspicious language indicative of spam, or wasn't written in English. Try again.")
-    }
-
-    let subject = format!("New website contact received from {from}");
-    let creds = Credentials::new(username.to_owned(), password.to_owned());
-
-    let email = Message::builder()
-        .from(String::from(from).parse().unwrap())
-        .to(to.parse().unwrap())
-        .subject(subject)
-        .body(String::from(&form.message))
-        .unwrap();
-
-    let mailer = SmtpTransport::starttls_relay("smtp.gmail.com")
-        .unwrap()
-        .credentials(creds)
-        .build();
-
-    match mailer.send(&email) {
-        Ok(_) => println!("Email sent succesffully!"),
-        Err(e) => panic!("Could not send email: {e:?}"),
-    };
-
-    match templates.render("contact.html", &context) {
-        Ok(s) => HttpResponse::Ok().content_type("text/html").body(s),
-        Err(e) => {
-            println!("{:?}", e);
-            HttpResponse::InternalServerError()
-                .content_type("text/html")
-                .body("<p>Something went wrong!</p>")
-        }
-    }
-}
-
-fn is_spam(form: &web::Form<ContactForm>) -> bool {
-    let allowed = std::vec![Lang::Eng];
-    let detector = Detector::with_allowlist(allowed);
-    let lang = detector.detect_lang(&form.message);
-    let is_english: bool = lang == Some(Lang::Eng);
-
-    return form.message.is_empty() || 
-        form.message.chars().count() < SPAM_CHAR ||
-        !is_english ||
-        SPAM_SHARDS.iter().any(|&shard| 
-            form.message.to_lowercase().contains(shard)
-        );
-}
-
-fn pull_metadatas(tag: Option<&String>) -> Result<Vec<Metadata>, std::io::Error> {
+fn pull_metadatas(tag: Option<&String>) -> Result<Vec<(i32, Vec<Metadata>)>, std::io::Error> {
     let mut t = ignore::types::TypesBuilder::new();
     t.add_defaults();
     let tomls = match t.select("toml").build() {
@@ -288,9 +206,33 @@ fn pull_metadatas(tag: Option<&String>) -> Result<Vec<Metadata>, std::io::Error>
         }
     }
 
-    metadatas.sort_by(|a, b| b.string_date_to_datetime("date").cmp(&a.string_date_to_datetime("date")));
+    metadatas.sort_by(|a, b| {
+        b.string_date_to_datetime("date")
+            .cmp(&a.string_date_to_datetime("date"))
+    });
 
-    Ok(metadatas)
+    let post_years: HashSet<i32> = metadatas
+        .clone()
+        .iter()
+        .map(|m| m.string_date_to_datetime("date").year())
+        .collect();
+
+    let mut mapped_posts: Vec<(i32, Vec<Metadata>)> = post_years
+        .into_iter()
+        .map(|y| {
+            (
+                y,
+                metadatas
+                    .clone()
+                    .into_iter()
+                    .filter(|m| m.string_date_to_datetime("date").year() == y)
+                    .collect::<Vec<Metadata>>(),
+            )
+        })
+        .collect();
+    mapped_posts.sort_by(|a, b| b.0.cmp(&a.0));
+
+    Ok(mapped_posts)
 }
 
 fn pull_post(slug: &str) -> Result<String, std::io::Error> {

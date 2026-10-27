@@ -1,5 +1,6 @@
-title = "Hierarchical ordinal modeling of book reviews"
-date = "2026-10-01"
+title = "Hierarchical ordinal modelling of book reviews"
+date = "2026-10-12"
 slug = "ordinal-model-book-reviews"
 tags = ["Bayesian", "Stan", "books"]
 publish = true
+edit_notes = "fixing typos"

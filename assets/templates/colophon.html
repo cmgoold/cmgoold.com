@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>cmgoold/colophon</title>
+{% endblock head %}
+
+{% block content %}
+    <p>I was inspired to start this website
+    after finding some long-running, independent
+    blogs and personal websites, some going back as far
+    as the 90s. Each person's site had its own balance of
+    specialist and personal writing. Some discussed only
+    themed topics like software engineering, web design,
+    maths or book reviews, while others were used to 
+    record the owner's day-to-day life.
+    Each site felt welcoming and familiar,
+    representing a much healthier slice of the internet than the one
+    constructed to farm our attention for money and greed.
+    </p>
+
+    <p>This site is a place for me to practice writing about
+    things that interest me. Writing helps process information,
+    and it feels right to share writing.
+    I don't track analytics or capture any of your
+    personal data.
+    I hope that this site exists for a
+    long time, and someone might stumble across it in 20 or 30 years
+    or so and finds it interesting and might start one of their own.
+    </p> 
+
+    <p>I don't use generative AI to construct or maintain this site,
+    nor to write posts or any of the content within them.
+    </p>
+
+    <h2>Digital colophon</h2>
+    <p>A <em>colophon</em> is that part of a book
+    with information about publishing
+    year, the publishing company, the type of paper its printed
+    on, the typeface its set in, and other front matter. 
+    I admit that I found colophons on websites 
+    a little strange at first,
+    but I now find them informative
+    and wish more pages had them!
+    </p>
+
+    <p>This site has a minimal backend written in Rust that serves
+    the HTML pages, and the pages
+    are are styled with plain CSS. 
+    I trialled a few different static site generators
+    but I always found myself constrained by weird hacks
+    to get them to work for features not strictly out of the box,
+    and nothing felt quite as self-sufficient as making my own.
+    </p>
+
+    <p>
+    There is a little Javascript to allow
+    users to switch between light and dark themes, and 
+    to switch between serif and sans-serif typefaces. The latter
+    I'm just trying out. I find typography important to how I 
+    process information, and so want to give people the option,
+    especially those that might not like reading one or the other. 
+    There is a push in some circles
+    to avoid the use of Javascript for small, personal websites like this,
+    but because I use it only to enhance accessibility,
+    I think it's fine.</p>
+    
+    <p>I write posts in HTML, giving me
+    complete flexibility over styling or writing equations
+    or adding tables or custom boxes, which no markup language
+    has made easier. I prefer
+    <a href=https://mcfunley.com/choose-boring-technology>boring technology</a>.
+    I host the code on Github, and use Github
+    Actions to build a docker container upon merging to <code>main</code>,
+    which is sent securely via <code>ssh</code> to my Hetzner server.
+    </p>
+    
+    
+    <h3>Typography</h3>
+    The default, serif body typeface is
+    <a href=https://fonts.adobe.com/fonts/adobe-garamond>Adobe Garamond Pro</a>,
+    and the sans-serif typeface is 
+    <a href=https://fonts.adobe.com/fonts/acumin">Acumin Pro</a>,
+    both hosted via Adobe Fonts. I'm
+    looking for open source alternatives I like just as much
+    to host directly, but haven't quite found anything as clear
+    as either of these yet to my liking. 
+    </p>
+{% endblock content %}

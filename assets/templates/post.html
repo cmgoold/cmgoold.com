@@ -5,7 +5,8 @@
 {% endblock head %}
 
 {% block content %}
-    <h1>{{ metadata.title }}</h1>
+    <div class="post">
+        <h1>{{ metadata.title }}</h1>
     <div class=metadata> 
         <ul>
             <li>
@@ -26,4 +27,5 @@
         </ul>
     </div>
     <article>{{ post | safe }}<article>
+    </div>
 {% endblock content %}

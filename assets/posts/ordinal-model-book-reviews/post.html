@@ -417,7 +417,7 @@ in the posterior predictive distribution more clearly.</p>
 <h2>Extensions</h2>
 
 <p>There is a wealth of data analysis that could be conducted
-to improve book rating analytics here. Possible extensions
+to improve book rating analytics. Possible extensions
 include building models that recommend similar books,
 perhaps by using something like a Gaussian process over
 ratings within genres and recommending
@@ -425,9 +425,11 @@ highly correlated books', or building in measurement error
 in the ratings, similar to the 
 <a href=https://rss.onlinelibrary.wiley.com/doi/abs/10.2307/2346806>Dawid-Skene (1979)</a>
 model.
-The amount of data here necessitates more efficient
+The amount of data necessitates more efficient
 inference approaches to be practical, however, since even
-HMC will take a good while on millions of data points.
-It could be a cool app idea, however, to provide
-a place for these type of insights for books.
+Markov chain Monte Carlo algorithms like HMC 
+will take a good while on millions of data points.
+It could be a cool app idea, however, to display
+these type of generative modelling
+insights for books.
 </p>

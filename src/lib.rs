@@ -2,7 +2,6 @@ use actix_files::Files;
 use actix_web::{dev::Server, web, App, HttpResponse, HttpServer};
 use tera::Tera;
 
-mod contact;
 mod handlers;
 mod metadata;
 
@@ -35,8 +34,7 @@ pub fn serve() -> Result<Server, std::io::Error> {
             .service(handlers::posts)
             .service(handlers::post)
             .service(handlers::serve_static)
-            .service(handlers::contact)
-            .service(handlers::send)
+            .service(handlers::colophon)
     })
     .bind(("0.0.0.0", 8080))?
     .run();

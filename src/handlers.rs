@@ -10,7 +10,6 @@ use std::collections::HashSet;
 use std::time::SystemTime;
 use whatlang::{Detector, Lang};
 
-use crate::contact::ContactForm;
 use crate::metadata::Metadata;
 
 const SPAM_SHARDS: &[&str] = &[
@@ -26,6 +25,20 @@ const SPAM_CHAR: usize = 50;
 #[derive(Debug, Deserialize)]
 pub struct Tag {
     tag: Option<String>,
+}
+
+#[get("/colophon")]
+pub async fn colophon(templates: web::Data<tera::Tera>) -> impl Responder {
+    let context = tera::Context::new();
+    match templates.render("colophon.html", &context) {
+        Ok(s) => HttpResponse::Ok().content_type("text/html").body(s),
+        Err(e) => {
+            println!("{:?}", e);
+            HttpResponse::InternalServerError()
+                .content_type("text/html")
+                .body("<p>Something went wrong!</p>")
+        }
+    }
 }
 
 #[get("/")]
@@ -138,103 +151,6 @@ pub async fn post(templates: web::Data<tera::Tera>, slug: web::Path<String>) -> 
                 .body("<p>Could not find post</p>");
         }
     }
-}
-
-#[get("/contact")]
-pub async fn contact(templates: web::Data<tera::Tera>) -> impl Responder {
-    let mut context = tera::Context::new();
-    context.insert("file", "");
-
-    match templates.render("contact.html", &context) {
-        Ok(s) => HttpResponse::Ok().content_type("text/html").body(s),
-        Err(e) => {
-            println!("{:?}", e);
-            HttpResponse::InternalServerError()
-                .content_type("text/html")
-                .body("<p>Something went wrong!</p>")
-        }
-    }
-}
-
-#[post("/contact")]
-pub async fn send(
-    templates: web::Data<tera::Tera>,
-    form: web::Form<ContactForm>,
-) -> impl Responder {
-    let mut context = tera::Context::new();
-    context.insert("file", "");
-
-    let submitted = true;
-    context.insert("submitted", &submitted);
-    context.insert("name", &form.name);
-
-    let name = form.name.to_owned();
-    let from_email = form.email.to_owned();
-    let from = format!("{name} <{from_email}>");
-
-    dotenv().ok();
-    let to = std::env::var("FORWARDING_EMAIL")
-        .ok()
-        .unwrap_or(String::from(""));
-    println!("To address set to {}", to);
-
-    let username = std::env::var("USERNAME").ok().unwrap_or(String::from(""));
-    let password = std::env::var("PASSWORD").ok().unwrap_or(String::from(""));
-
-    if from_email.is_empty() || !from_email.contains("@") {
-        return HttpResponse::InternalServerError()
-            .content_type("text/html")
-            .body("<p>Error! Did you provide a valid email address?</p>");
-    }
-    if is_spam(&form) {
-        return HttpResponse::InternalServerError()
-            .content_type("text/html")
-            .body("<p>Oops! Your message wasn't long enough, contained suspicious language indicative of spam, or wasn't written in English. Try again.");
-    }
-
-    let subject = format!("New website contact received from {from}");
-    let creds = Credentials::new(username.to_owned(), password.to_owned());
-
-    let email = Message::builder()
-        .from(String::from(from).parse().unwrap())
-        .to(to.parse().unwrap())
-        .subject(subject)
-        .body(String::from(&form.message))
-        .unwrap();
-
-    let mailer = SmtpTransport::starttls_relay("smtp.gmail.com")
-        .unwrap()
-        .credentials(creds)
-        .build();
-
-    match mailer.send(&email) {
-        Ok(_) => println!("Email sent succesffully!"),
-        Err(e) => panic!("Could not send email: {e:?}"),
-    };
-
-    match templates.render("contact.html", &context) {
-        Ok(s) => HttpResponse::Ok().content_type("text/html").body(s),
-        Err(e) => {
-            println!("{:?}", e);
-            HttpResponse::InternalServerError()
-                .content_type("text/html")
-                .body("<p>Something went wrong!</p>")
-        }
-    }
-}
-
-fn is_spam(form: &web::Form<ContactForm>) -> bool {
-    let allowed = std::vec![Lang::Eng];
-    let detector = Detector::with_allowlist(allowed);
-    let lang = detector.detect_lang(&form.message);
-    let is_english: bool = lang == Some(Lang::Eng);
-
-    return form.message.is_empty()
-        || form.message.chars().count() < SPAM_CHAR
-        || !is_english
-        || SPAM_SHARDS
-            .iter()
-            .any(|&shard| form.message.to_lowercase().contains(shard));
 }
 
 fn pull_metadatas(tag: Option<&String>) -> Result<Vec<(i32, Vec<Metadata>)>, std::io::Error> {

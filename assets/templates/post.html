@@ -6,26 +6,28 @@
 
 {% block content %}
     <div class="post">
-        <h1>{{ metadata.title }}</h1>
-    <div class=metadata> 
-        <ul>
-            <li>
-                <span>tags: </span>
-                <span class="tags">
-                    {% for tag in metadata.tags %}
-                        <a href=/posts?tag={{ tag }}>{{ tag }}</a>
-                    {% endfor %}
-                </span>
-            </li>
-            <li>Posted: {{ posted | date(format="%b %d, %Y") }}</li>
-            {% if future_edits %}
-                <li>Edited: {{ edited | date(format="%b %d, %Y") }}</li>
-            {% endif %}
-            {% if metadata.edit_notes %}
-                <li>Edits: {{ metadata.edit_notes }}</li>
-            {% endif %}
-        </ul>
-    </div>
+        <div class="title-block">
+            <h1 class="post-title">{{ metadata.title }}</h1>
+            <div class=metadata> 
+                <ul>
+                    <li>
+                        <span>tags: </span>
+                        <span class="tags">
+                            {% for tag in metadata.tags %}
+                                <a href=/posts?tag={{ tag }}>{{ tag }}</a>
+                            {% endfor %}
+                        </span>
+                    </li>
+                    <li>Posted: {{ posted | date(format="%b %d, %Y") }}</li>
+                    {% if future_edits %}
+                        <li>Edited: {{ edited | date(format="%b %d, %Y") }}</li>
+                    {% endif %}
+                    {% if metadata.edit_notes %}
+                        <li>Edits: {{ metadata.edit_notes }}</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
     <article>{{ post | safe }}<article>
     </div>
 {% endblock content %}
